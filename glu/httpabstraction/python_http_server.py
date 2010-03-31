@@ -272,7 +272,7 @@ def _app_method(environ, start_response):
     return ""
 
 
-class PythonHttpServer(object):
+class PythonHttpServer(BaseHttpServer):
     """
     Wrapper class around a concrete HTTP server implementation.
     

@@ -20,7 +20,7 @@ import glu.settings as settings
 
 from glu.logger import *
 
-from glu.httpabstraction.base_server import BaseHttpServer, BaseHttpRequest
+from glu.httpabstraction.base_server import BaseHttpServer
 
 
 class _HttpHandler(object):
@@ -79,7 +79,7 @@ def _app_method(environ, start_response):
     return ""
 
 
-class GaeHttpServer(object):
+class GaeHttpServer(BaseHttpServer):
     """
     Wrapper class around a concrete HTTP server implementation.
     
