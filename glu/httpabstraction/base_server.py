@@ -74,4 +74,4 @@ class BaseHttpServer(object):
     Wrapper class around a concrete HTTP server implementation.
     
     """    
-    def __init__(self, port, request_handler, request_class): pass
+    def __init__(self, port, request_handler): pass

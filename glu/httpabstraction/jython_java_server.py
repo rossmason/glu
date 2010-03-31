@@ -239,7 +239,7 @@ class __HttpHandler(HttpHandler):
     this class is not part of the official http-abstraction-API.
     
     """
-    def __init__(self, request_handler, request_class):
+    def __init__(self, request_handler):
         """
         Initialize the handler class for the native request.
         
@@ -256,21 +256,16 @@ class __HttpHandler(HttpHandler):
                                 that can take a BaseHttpRequest. Normally,
                                 this is our RequestDispatcher class.
                                 
-        @param request_class:   The class that's used to wrap the request.
-        @type request_class:    Any class derived from BaseHttpRequest.
-        
         """
         self.request_handler = request_handler
-        self.request_class   = request_class
         
     def handle(self, native_request):
         """
         Handle a native request.
         
         Converts the native request to a BaseHttpRequest, prepares
-        logging and exception handling and calls the generic
-        handler class, which was specified during server creation
-        (normally our RequestDispatcher class).
+        logging and exception handling and creates the specific
+        handler class.
         
         Any so-far unhandled exceptions are caught here and a stack
         trace is printed to stderr.
@@ -281,7 +276,7 @@ class __HttpHandler(HttpHandler):
         """
         try:
             start_time = datetime.datetime.now()
-            req = self.request_class(native_request)            
+            req = JythonJavaHttpRequest(native_request)            
             msg = "%s : %s : %s" % (req.getRequestProtocol(),
                                     req.getRequestMethod(),
                                     req.getRequestURI())
@@ -308,7 +303,7 @@ class JythonJavaHttpServer(BaseHttpServer):
             
     __native_server = None
     
-    def __init__(self, port, request_handler, request_class):
+    def __init__(self, port, request_handler):
         """
         Initialize and start an HTTP server.
         
@@ -327,7 +322,7 @@ class JythonJavaHttpServer(BaseHttpServer):
         self.request_handler = request_handler
         self.__native_server = HttpServer.create(InetSocketAddress(port), 5);
         self.__native_server.createContext(settings.DOCUMENT_ROOT,
-                                           __HttpHandler(request_handler, request_class));
+                                           __HttpHandler(request_handler));
         self.__native_server.setExecutor(None);
         self.__native_server.start();
         log("Listening for HTTP requests on port %d..." % port)

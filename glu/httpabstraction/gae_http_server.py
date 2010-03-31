@@ -17,11 +17,16 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 # Glu imports
 import glu.settings as settings
+from glu.httpabstraction.python_http_server import PythonHttpRequest
 
 from glu.logger import *
 
 from glu.httpabstraction.base_server import BaseHttpServer
 
+#
+# Note: We are not defining out own Request class here, since we
+# can just use the request class used for Python.
+#
 
 class _HttpHandler(object):
     """
@@ -29,23 +34,13 @@ class _HttpHandler(object):
     this class is not part of the official http-abstraction-API.
     
     """
-    def __init__(self, request_handler, request_class):
+    def __init__(self, request_handler):
         self.request_handler = request_handler
-        self.request_class   = request_class
         
     def handle(self, environ, start_response):
-        """
-        req = self.request_class(environ, start_response)            
-        #code, response_body = self.request_handler.handle(req)
-        req.setResponse(200, "This is a test 200!")
-        req.sendResponse()
-        req.close()
-        return
-        """
-        
         try:
             start_time = datetime.datetime.now()
-            req = self.request_class(environ, start_response)            
+            req = PythonHttpRequest(environ, start_response)            
             msg = "%s : %s : %s" % (req.getRequestProtocol(),
                                     req.getRequestMethod(),
                                     req.getRequestURI())
@@ -70,11 +65,10 @@ class _HttpHandler(object):
 # ----------------------------------------------------
 
 request_handler = None
-request_class   = None
 
 def _app_method(environ, start_response):
-    global request_handler, request_class
-    handler = _HttpHandler(request_handler, request_class)
+    global request_handler
+    handler = _HttpHandler(request_handler)
     handler.handle(environ, start_response)
     return ""
 
@@ -87,7 +81,7 @@ class GaeHttpServer(BaseHttpServer):
             
     __native_server = None
     
-    def __init__(self, port, req_handler, req_class):
+    def __init__(self, port, req_handler):
         """
         Initialize and start an HTTP server.
         
@@ -103,9 +97,8 @@ class GaeHttpServer(BaseHttpServer):
                                 RequestDispatcher class.
         
         """
-        global request_handler, request_class
+        global request_handler
         request_handler = req_handler
-        request_class   = req_class
         log("Listening for HTTP requests...")
         run_wsgi_app(_app_method)
 

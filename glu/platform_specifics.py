@@ -6,33 +6,42 @@ or a different storage abstraction.
 
 """
 
+#
+# These are the three types of platforms we currently know about.
+#
 PLATFORM_PYTHON = "Python"
 PLATFORM_JYTHON = "Jython"
 PLATFORM_GAE    = "GAE"
 
-
+#
+# ------------------------------------------------------------------------------------------
+# !!! EDIT THIS:
+# ------------------------------------------------------------------------------------------
+#
 PLATFORM = PLATFORM_PYTHON
 
 
+
+
+#
+# Export the correct storage object under the generic name 'STORAGE_OBJECT'
+#
 if PLATFORM == PLATFORM_GAE:
-    from glu.storageabstraction.gae_storage import GaeStorage as Storage
-    storage_args = []
+    from glu.storageabstraction.gae_storage import GaeStorage
+    STORAGE_OBJECT = GaeStorage()
 else:
-    from glu.storageabstraction.file_storage import FileStorage as Storage
-    storage_args = [ "/tmp/rdb" ]
-
-STORAGE_OBJECT = Storage(*storage_args)
+    from glu.storageabstraction.file_storage import FileStorage
+    STORAGE_OBJECT = FileStorage("/tmp/rdb")
 
 
+#
+# Export the correct server class under the generic name 'HttpServer'
+#
 if PLATFORM == PLATFORM_JYTHON:
     from glu.httpabstraction.jython_java_server import JythonJavaHttpServer as HttpServer
-    from glu.httpabstraction.jython_java_server import JythonJavaHttpRequest as HttpRequest
 elif PLATFORM == PLATFORM_PYTHON:
     from glu.httpabstraction.python_http_server import PythonHttpServer as HttpServer
-    from glu.httpabstraction.python_http_server import PythonHttpRequest as HttpRequest
 else:
     from glu.httpabstraction.gae_http_server import GaeHttpServer as HttpServer
-    # Yes, we can use the Python http request handler
-    from glu.httpabstraction.python_http_server import PythonHttpRequest as HttpRequest
 
 
