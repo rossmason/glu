@@ -23,11 +23,14 @@ class GsearchBean(BaseBean):
                         """
     SERVICES         = {
                            "search" :   {
-                               "desc"   : "Provide 'query' as attribute to GET a search result.",
+                               "desc"   : "Provide 'query' as attribute to GET a search result. A 'num'ber of results can optionally be specified as well.",
                                "params" : {
                                     "query" : ParameterDef(PARAM_STRING, "The search query",
                                                            required=True,
                                                            default="computer"),
+                                    "num"   : ParameterDef(PARAM_NUMBER, "The number of results you would like to have returned",
+                                                           required=False,
+                                                           default=10)
                                }
                            }
                        }
@@ -52,7 +55,26 @@ class GsearchBean(BaseBean):
         """
         # Get my parameters
         query      = params['query']
+        num        = params['num']
         key        = params['api_key']
-        code, data = self.httpGet("http://base.google.com/base/feeds/snippets?q=%s&key=%s" % (query, key))
-        return code, data
+        # This is the official API, which seems to require the API key
+        #code, data = self.httpGet("http://base.google.com/base/feeds/snippets?q=%s&key=%s" % (query, key))
+        #
+        # But we like things in JSON. There is another Google search API, which does things in JSON,
+        # and which does not require the API key. It only seems to read 10 (or so) results at any
+        # time, so we put this in a loop until we have the requested number of results.
+        # 
+        start = 1
+        results = []
+        while len(results) < num:
+            url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&start=%d" % (query, start)
+            code, data_str = self.httpGet(url)
+            if code == 200:
+                try:
+                    data      = json.loads(data_str)
+                    new_batch = data['responseData']['results']
+                    results  += new_batch
+                except Exception, e:
+                    return 400, "Result data was malformed: " + str(e)
+        return code, results[:num]
 

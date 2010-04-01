@@ -118,4 +118,10 @@ class TwitterBean(BaseBean):
         """
         # Get my parameters
         self.httpSetCredentials(params['account_name'], params['account_password'])
-        return self.httpGet("http://api.twitter.com/1/statuses/user_timeline.json")
+        code, obj_str = self.httpGet("http://api.twitter.com/1/statuses/user_timeline.json")
+        if code == 200:
+            obj = json.loads(obj_str)
+        else:
+            obj = obj_str
+        return code, obj
+
