@@ -43,7 +43,6 @@ class StaticBrowser(BaseBrowser):
         
         """
         path = self.request.getRequestPath()[len(settings.PREFIX_STATIC)+1:]
-        print "@@@ path: ", path
         if ".." in path:
             # Won't allow that
             return 400, "Invalid path specifier"

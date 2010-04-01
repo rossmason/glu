@@ -1,11 +1,13 @@
 
+import glujson as json
+
 import glu.core.codebrowser  # Wanted to be much more selective here, but a circular
                              # import issue was most easily resolved like this.
                              # We only need getBeanInstance() from this module.
 
 from glu.exceptions import *
-from glu.resources  import paramSanityCheck, fillDefaults, retrieveResourceFromStorage, \
-                           getResourceUri
+from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
+                           retrieveResourceFromStorage, getResourceUri
 
 def _accessBeanService(bean, services, complete_resource_def, resource_name, service_name,
                        runtime_param_dict, input, request=None, direct_call=False):
@@ -50,15 +52,34 @@ def _accessBeanService(bean, services, complete_resource_def, resource_name, ser
         service_def = services.get(service_name)
         if not service_def:
             raise GluException("Service '%s' is not available in this resource." % service_name)
-    
+
         # Some runtime parameters may have been provided as arguments on
         # the URL command line. They need to be processed and added to
         # the parameters if necessary.
         runtime_param_def  = service_def.get('params')
         if runtime_param_def:
+            # If the 'allow_params_in_body' flag is set for a service then we
+            # allow runtime parameters to be passed in the request body PUT or POST.
+            # So, if the URL command line parameters are not specified then we
+            # should take the runtime parameters out of the body.
             # Sanity checking and filling in of defaults for the runtime parameters
+            if service_def.get('allow_params_in_body')  and  input:
+                # Take the base definition of the parameters from the request body
+                try:
+                    base_params = json.loads(input.strip())
+                except ValueError, e:
+                    # Probably couldn't parse JSON properly.
+                    base_param = {}
+                # Load the values from the body into the runtime_param_dict, but
+                # only those which are not defined there yet. This allows the
+                # command line args to overwrite what's specified in the body.
+                for name, value in base_params.items():
+                    if name not in runtime_param_dict:
+                        runtime_param_dict[name] = value
+
             paramSanityCheck(runtime_param_dict, runtime_param_def, "runtime parameter")
             fillDefaults(runtime_param_def, runtime_param_dict)
+            convertTypes(runtime_param_def, runtime_param_dict)
     
         services = complete_resource_def['public']['services']
         if service_name in services  and  hasattr(bean, service_name):
@@ -70,9 +91,9 @@ def _accessBeanService(bean, services, complete_resource_def, resource_name, ser
                 # from the resource definition.
                 params.update(runtime_param_dict)
             
-            code, data = service_method(request = request,
-                                        input   = input,
-                                        params  = params)
+            code, data = service_method(request     = request,
+                                        input       = input,
+                                        params      = params)
         else:
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:

@@ -10,15 +10,16 @@ Also defines a base class for all beans.
 # 
 
 # Exporting these beans
-from glu.beans.base_bean     import BaseBean
-from glu.beans.twitter_bean  import TwitterBean
-from glu.beans.gsearch_bean  import GsearchBean
-from glu.beans.combiner_bean import CombinerBean
+from glu.beans.base_bean      import BaseBean
+from glu.beans.twitter_bean   import TwitterBean
+from glu.beans.gsearch_bean   import GsearchBean
+from glu.beans.combiner_bean  import CombinerBean
+from glu.beans.gpswalker_bean import GpsWalkerBean
 
 #
 # The known beans
 #
-_KNOWN_BEANS = [ TwitterBean, GsearchBean, CombinerBean ]
+_KNOWN_BEANS = [ TwitterBean, GsearchBean, CombinerBean, GpsWalkerBean ]
 
 # -------------------------------------------------------------------------------------
 # Don't edit down here...

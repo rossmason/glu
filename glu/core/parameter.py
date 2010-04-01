@@ -44,13 +44,25 @@ KNOWN_BASIC_TYPES = [ PARAM_STRING, PARAM_PASSWORD, PARAM_BOOL, PARAM_DATE,
 # Note: Date is defined as YYYY-MM-DD
 # Note: Time is defined as HH:MM:SS
 # 
+def __numstr_to_num(x):
+    if type(x) in [ int, float ]:
+        return x
+    elif type(x) in [ str, unicode ]:
+        try:
+            return int(x)
+        except:
+            return float(x)
+    # Can't convert anything else
+    return None
+
+
 TYPE_COMPATIBILITY = {
     PARAM_STRING   : ([ unicode, str ], [ str ], None),
     PARAM_PASSWORD : ([ unicode, str ], [ str ], None),
     PARAM_BOOL     : ([ bool ], [ bool ], None),
     PARAM_DATE     : ([ unicode, str ], [ date ], lambda x : date(*[ int(elem) for elem in x.split("-")])),
     PARAM_TIME     : ([ unicode, str ], [ time_class ], lambda x : time_class(*[ int(elem) for elem in x.split(":")])),
-    PARAM_NUMBER   : ([ int, float ], [ int, float ], None),
+    PARAM_NUMBER   : ([ int, float ], [ int, float ], __numstr_to_num),
     PARAM_URI      : ([ unicode, str ], [ str ], None)
 }
 

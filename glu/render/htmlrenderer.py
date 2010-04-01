@@ -166,7 +166,7 @@ class HtmlRenderer(BaseRenderer):
                 data_str = str(data)
             else:
                 data_str = data
-            if type(data) is not str  and  type(data) is not unicode  and  data_str.isdigit():
+            if type(data) is not str  and  type(data) is not unicode  and  type(data) in [ int, float ]:
                 # Output as number
                 out = data_str
             else:

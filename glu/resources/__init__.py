@@ -71,9 +71,11 @@ def retrieveResourceFromStorage(uri, only_public=False):
     obj = None
     try:
         obj = STORAGE_OBJECT.loadResourceFromStorage(resource_name)
+        if not obj:
+            raise Exception("Unknown resource: " + resource_name)
         if type(obj) is not dict  or  'public' not in obj:
             obj = None
-            raise Exception("Missing top-level element 'public'.")
+            raise Exception("Missing top-level element 'public' or malformed resource.")
         public_obj = obj['public']
         # Do some sanity checking on the resource. Needs to contain
         # a few key elements at least.
@@ -198,6 +200,40 @@ def fillDefaults(param_def_dict, param_dict):
     for pname, pdict in param_def_dict.items():
         if not pdict['required']  and  pname not in param_dict:
             param_dict[pname] = pdict['default']
+
+def convertTypes(param_def_dict, param_dict):
+    """
+    Convert parameters to those types indicated in the parameter definition.
+
+    This is useful when we get parameters, such as the URL command line, where
+    all is passed as string.
+
+    @param param_def_dict:  The parameter definition- including default values -
+                            provided by the bean code.
+    @type  param_def_dict:  dict
+    
+    @param param_dict:      The parameter definition provided by the client.
+    @type  param_dict:      dict
+
+    """
+    for pname in param_dict:
+        type_str   = param_def_dict[pname]['type']
+        param_val  = param_dict[pname]
+        param_type = type(param_val)
+        storage_types, runtime_types, conversion_func = TYPE_COMPATIBILITY[type_str]
+        if param_type in runtime_types:
+            pass
+        elif param_type not in storage_types:
+            try:
+                if conversion_func:
+                    param_dict[pname] = conversion_func(param_val)
+                else:
+                    raise Exception("Cannot convert provided parameter type (%s) to necessary type(s) '%s'" % \
+                                    (param_type, runtime_types))
+            except Exception, e:
+                raise GluException("Incompatible type for parameter '%s' in section '%s': %s" % \
+                                   (pname, name_for_errors, str(e)))
+
 
 def makeResource(bean_class, params):
     """

@@ -10,9 +10,9 @@ import simplejson as json
 TWITTER_ACCOUNT  = "BrendelConsult"      # Replace those two with actual account credentials
 TWITTER_PASSWORD = "tw88erbahn"
 
-#SERVER_URL = "http://mulesoft-glu.appspot.com"
+SERVER_URL = "http://mulesoft-glu.appspot.com"
 #SERVER_URL = "http://localhost:8080"
-SERVER_URL = "http://localhost:8001"
+#SERVER_URL = "http://localhost:8001"
 
 
 
@@ -94,5 +94,13 @@ send_test({
             }
           },
           code_url=SERVER_URL + "/code/CombinerBean")
+
+# Create the GpsWalker bean
+send_test({
+            'resource_creation_params' : {
+                'suggested_name' : 'MyGPSWalker'
+            }
+          },
+          code_url=SERVER_URL + "/code/GpsWalkerBean")
 
 print "\nDone..."
