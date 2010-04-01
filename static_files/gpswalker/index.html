@@ -11,11 +11,11 @@
 
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAApvtgUnVbhZ4o1RA5ncDnZhQUqOWhSralYm61ppj_eByh3SFpGRRMqBepvBYmX9jOxZUOVeS0hR2J1A"
             type="text/javascript"></script>
+
     <script type="text/javascript">
 
-        var ibeans;
-        var req;
-        var coords;
+        var req;       /* Global reference to the current XMLHttpRequest object. */
+        var coords;    /* Global storage for the current coordinates.            */
 
         /**
          *  A helper method, which encapsulates the sending
@@ -27,7 +27,6 @@
          *  to service points either on the URL command line or
          *  in the body of the request (if the bean code allows
          *  this via the 'allow_params_in_body' attribute.
-         *
          */
         function sendReq(url, data, handler_method)
         {
@@ -39,7 +38,12 @@
             req.send(jstr);
         }
 
-
+        /**
+         *  Called when the page is loaded. Sets up the map,
+         *  and places us in San Francisco. Most importantly,
+         *  it installs the polling method, which gets updated
+         *  coordinates from the server at regular intervals.
+         */
         function init()
         {
             setupMap();
@@ -47,7 +51,9 @@
             setInterval("askForNewCoords()", 2000);
         }
 
-
+        /**
+         *  Draws a new Google map.
+         */
         function setupMap()
         {
             if (GBrowserIsCompatible())
@@ -60,14 +66,23 @@
             }
         }
 
-
+        /**
+         *  The poller function, which is called at reguler intervals
+         *  and requests a new set of coordinates from the server.
+         *  The server does not maintain state between requests, so we
+         *  are passing to the server the coordinates we currently have.
+         */
         function askForNewCoords()
         {
             sendReq("/resource/MyGPSWalker/walk", coords, receiveNewCoords);
         }
 
-
-
+        /**
+         *  The handler that's called when new coordinates arrive
+         *  from the server. Data arrives as a JSON string, which
+         *  is parsed here. The map is then re-drawn with the new
+         *  coordinates.
+         */
         function receiveNewCoords()
         {
             if (req.readyState == 4) {
@@ -78,6 +93,10 @@
             }
         }
 
+        /**
+         *  Draws a Google map with the specified coordinates
+         *  and traces a path when updating.
+         */
         function drawMap(latitude, longitude)
         {
             //Create the coordinates
@@ -99,6 +118,10 @@
             map.setCenter(latLng, 15);
         }
 
+        /**
+         *  Requests the coordinates for a specified city from the server.
+         *  The map needs to be re-initialized to erase the path trace.
+         */
         function goto(city)
         {
             sendReq("/resource/MyGPSWalker/city", { "name" : city }, receiveNewCoords);

@@ -34,7 +34,7 @@ class GpsWalkerBean(BaseBean):
                                }
                            },
                            "city" : {
-                                "desc"  : "Return coordinates for the specified city.",
+                                "desc"  : "Return coordinates for the specified city: 'SanFrancisco', 'London', 'Valletta', 'Auckland'",
                                 "allow_params_in_body" : True,
                                 "params" : {
                                     "name"       : ParameterDef(PARAM_STRING, "Name of the city", required=True)
@@ -65,7 +65,7 @@ class GpsWalkerBean(BaseBean):
         long  = params['long']
 
         dist  = random.random() * 0.002
-        angle = random.random() * math.pi
+        angle = random.random() * math.pi * 2
 
         lat  += dist * math.sin(angle)
         long += dist * math.cos(angle)
@@ -83,7 +83,6 @@ class GpsWalkerBean(BaseBean):
         "Valletta"     : { "lat" : 35.897655,  "long" : 14.511631 },
         "Auckland"     : { "lat" : -36.848461, "long" : 174.762183 },
     }
-
 
     def city(self, request, input, params):
         """
