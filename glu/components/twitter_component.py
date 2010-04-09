@@ -1,5 +1,5 @@
 """
-A test bean.
+A test component.
 
 """
 # Python imports
@@ -7,10 +7,10 @@ import urllib
 import glujson as json
 
 # Glu imports
-from glu.beans.api import *
+from glu.components.api import *
 
-class TwitterBean(BaseBean):
-    NAME             = "TwitterBean"
+class TwitterComponent(BaseComponent):
+    NAME             = "TwitterComponent"
     PARAM_DEFINITION = {
                          "account_name" :     ParameterDef(PARAM_STRING, "Twitter account name"),
                          "account_password" : ParameterDef(PARAM_PASSWORD, "Password")
@@ -18,7 +18,7 @@ class TwitterBean(BaseBean):
     
     DESCRIPTION      = "Provides access to a Twitter account."
     DOCUMENTATION    =  """
-                        The Twitter bean is designed to provide access to a Twitter account.
+                        The Twitter component is designed to provide access to a Twitter account.
                         It can be used to get status as well as update status.
                         """
     SERVICES         = {

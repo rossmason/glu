@@ -1,5 +1,5 @@
 """
-A test bean.
+A test component.
 
 """
 # Python imports
@@ -7,17 +7,17 @@ import urllib
 import glujson as json
 
 # Glu imports
-from glu.beans.api import *
+from glu.components.api import *
 
-class GsearchBean(BaseBean):
-    NAME             = "GoogleSearchBean"
+class GsearchComponent(BaseComponent):
+    NAME             = "GoogleSearchComponent"
     PARAM_DEFINITION = {
                            "api_key" : ParameterDef(PARAM_STRING, "Google API key", required=True)
                        }
     
     DESCRIPTION      = "Provides an interface to Google Search."
     DOCUMENTATION    =  """
-                        This bean is used to perform Google searches.
+                        This component is used to perform Google searches.
                         
                         Provide a search term as the 'query' attribute.
                         """

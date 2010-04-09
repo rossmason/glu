@@ -70,8 +70,8 @@ class ParameterDef(object):
     """
     This class encapsulates a parameter definition.
     
-    Parameters are defined by each individual bean.
-    Therefore, in its __init__() method each bean
+    Parameters are defined by each individual component.
+    Therefore, in its __init__() method each component
     has to create its dictionary of ParameterDef classes
     and make it available via the getParams() method.
     
@@ -79,7 +79,7 @@ class ParameterDef(object):
     this parameter definition does not contain the
     name of the parameter, since the name is merely
     the key in the paramater definition dictionary,
-    which is maintained by each bean.
+    which is maintained by each component.
     
     """
     def __init__(self, ptype, desc="", required=True, default=None):
@@ -113,7 +113,7 @@ class ParameterDef(object):
         """
         Unwraps this single parameter definition into a plain dictionary.
         
-        Needed for browsing or accessing the bean's meta info.
+        Needed for browsing or accessing the component's meta info.
         
         @return:  Dictionary representation of the parameter.
         @rtype:   dict

@@ -3,7 +3,7 @@ import urllib
 import simplejson as json
 
 #
-# For the TWITTER bean:
+# For the TWITTER component:
 #
 # Specify the account name and password
 #
@@ -63,7 +63,7 @@ def send_test(data, code_url):
 
 print "\nCreating a few resources on the server...\n"
 
-# Create the Twitter bean
+# Create the Twitter component
 send_test({
             'params' : {
                 "account_password" : TWITTER_PASSWORD,
@@ -73,10 +73,10 @@ send_test({
                 "suggested_name" : "%sTwitter" % TWITTER_ACCOUNT
              }
           },
-          code_url=SERVER_URL + "/code/TwitterBean")
+          code_url=SERVER_URL + "/code/TwitterComponent")
 
 
-# Create the Gsearch bean
+# Create the Gsearch component
 send_test({
             'params' : {
                 'api_key' : "ABQIAAAApvtgUnVbhZ4o1RA5ncDnZhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS5mUUQ41lAGdMeNzzWizhSGRxfiA"
@@ -85,22 +85,22 @@ send_test({
                 'suggested_name' : 'MyGoogleSearch'
             }
           },
-          code_url=SERVER_URL + "/code/GoogleSearchBean")
+          code_url=SERVER_URL + "/code/GoogleSearchComponent")
 
-# Create the Combiner bean
+# Create the Combiner component
 send_test({
             'resource_creation_params' : {
                 'suggested_name' : 'Combiner'
             }
           },
-          code_url=SERVER_URL + "/code/CombinerBean")
+          code_url=SERVER_URL + "/code/CombinerComponent")
 
-# Create the GpsWalker bean
+# Create the GpsWalker component
 send_test({
             'resource_creation_params' : {
                 'suggested_name' : 'MyGPSWalker'
             }
           },
-          code_url=SERVER_URL + "/code/GpsWalkerBean")
+          code_url=SERVER_URL + "/code/GpsWalkerComponent")
 
 print "\nDone..."

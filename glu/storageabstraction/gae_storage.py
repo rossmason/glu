@@ -70,12 +70,17 @@ class GaeStorage(object):
             
         """
         try:
-            resource = ResourceStorage()
+            existing_resources = ResourceStorage.gql("WHERE name = :1", resource_name)
+            try:
+                # Make sure we update old ones
+                resource = existing_resources[0]
+            except Exception, e:
+                # No old ones? Make a new one.
+                resource = ResourceStorage()
             resource.name = resource_name
             resource.data = json.dumps(resource_def)
             resource.put()
             return "No error"
         except Exception, e:
             return str(e)
-            #raise GluException("Problems storing new resource: " + str(e))
 

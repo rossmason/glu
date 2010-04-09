@@ -55,9 +55,9 @@ class _HttpHandler(object):
             log("%s : %sms : %s : %s" % (msg, request_ms, code, len(response_body)),
                 start_time = start_time, facility=LOGF_ACCESS_LOG)
         except Exception, e:
+            sys.stderr.write(traceback.format_exc())
             raise e
             """
-            #print traceback.format_exc()
             #sys.exit(1)        
             """
 

@@ -14,7 +14,7 @@ class BaseBrowser(object):
     are assigned by the request-dispatcher.
     
     For example, there might be a specialized browser to deal with
-    the installed beans/code, another browser for server meta data
+    the installed components/code, another browser for server meta data
     and another to deal with resources.
     
     The RequestDispatcher instantiates specific browsers based on

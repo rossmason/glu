@@ -135,7 +135,7 @@ def paramSanityCheck(param_dict, param_def_dict, name_for_errors):
     @param param_dict:      The parameter dictionary provided (for example by the client).
     @type  param_dict:      dict
     
-    @param param_def_dict:  The parameter definition as provided by the bean (the code).
+    @param param_def_dict:  The parameter definition as provided by the component (the code).
                             The provided parameters are checked against this definition.
     @type  param_def_dict:  dict
     
@@ -190,7 +190,7 @@ def fillDefaults(param_def_dict, param_dict):
     default value that were specified in the parameter definition.
     
     @param param_def_dict:  The parameter definition- including default values -
-                            provided by the bean code.
+                            provided by the component code.
     @type  param_def_dict:  dict
     
     @param param_dict:      The parameter definition provided by the client.
@@ -209,7 +209,7 @@ def convertTypes(param_def_dict, param_dict):
     all is passed as string.
 
     @param param_def_dict:  The parameter definition- including default values -
-                            provided by the bean code.
+                            provided by the component code.
     @type  param_def_dict:  dict
     
     @param param_dict:      The parameter definition provided by the client.
@@ -235,10 +235,10 @@ def convertTypes(param_def_dict, param_dict):
                                    (pname, name_for_errors, str(e)))
 
 
-def makeResource(bean_class, params):
+def makeResource(component_class, params):
     """
     Create a new resource representation from the
-    specified bean class and parameter dictionary
+    specified component class and parameter dictionary
     and store it on disk.
         
     The parameters need to look something like this:
@@ -259,8 +259,8 @@ def makeResource(bean_class, params):
     parameters and also fills in default values where
     available.
     
-    @param bean_class:    A class (not instance) derived from BaseBean.
-    @type  bean_class:    BaseBean or derived.
+    @param component_class:    A class (not instance) derived from BaseComponent.
+    @type  component_class:    BaseComponent or derived.
     
     @param params:        The resource parameters provided by the client.
                           Needs to contain at least a 'params' dictionary
@@ -276,9 +276,9 @@ def makeResource(bean_class, params):
                           problem with the provided parameters.
 
     """    
-    # We get the meta data (parameter definition) from the bean
-    bean            = bean_class()
-    bean_params_def = bean.getMetaData()
+    # We get the meta data (parameter definition) from the component
+    component            = component_class()
+    component_params_def = component.getMetaData()
 
     #
     # First we check whether there are any unknown parameters specified
@@ -301,21 +301,21 @@ def makeResource(bean_class, params):
         provided_params = dict()
         params['params'] = provided_params
     provided_resource_creation_params = params.get('resource_creation_params')
-    paramSanityCheck(provided_params, bean_params_def['params'], 'params')
+    paramSanityCheck(provided_params, component_params_def['params'], 'params')
     paramSanityCheck(provided_resource_creation_params,
-                     bean_params_def['resource_creation_params'],
+                     component_params_def['resource_creation_params'],
                      'resource_creation_params')
 
     # The parameters passed the sanity checks. We can now create the resource definition.
     suggested_name = provided_resource_creation_params['suggested_name']
     resource_uri   = settings.PREFIX_RESOURCE + "/" + suggested_name
     resource_name  = suggested_name # TODO: Should check if the resource exists already...
-    params['code_uri'] = bean.getUri()  # Need a reference to the code that this applies to
+    params['code_uri'] = component.getUri()  # Need a reference to the code that this applies to
     
     # Some parameters are optional. If they were not supplied,
     # we need to add their default values.
-    fillDefaults(bean_params_def['params'], provided_params)
-    fillDefaults(bean_params_def['resource_creation_params'], provided_resource_creation_params)
+    fillDefaults(component_params_def['params'], provided_params)
+    fillDefaults(component_params_def['resource_creation_params'], provided_resource_creation_params)
     
     # Storage for a resource contains a private and public part. The public part is what
     # any user of the resource can see: URI, name and description. In the private part we

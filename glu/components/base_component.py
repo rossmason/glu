@@ -1,5 +1,5 @@
 """
-Defines a base class for all beans.
+Defines a base class for all components.
 
 """
 # Python imports
@@ -35,11 +35,11 @@ def _change_params_to_plain_dict(param_dict):
     return d
 
 
-class BaseBean(object):
+class BaseComponent(object):
     """
-    The base class for all code beans.
+    The base class for all code components.
     
-    A bean author only needs to override a few methods or data values
+    A component author only needs to override a few methods or data values
     to get started.
     
     Specifically:
@@ -54,7 +54,7 @@ class BaseBean(object):
     SERVICES and baseService() need to be explained.
     
     baseServices() is the normal method that is called to processes a request.
-    However, a bean may also specify 'sub-SERVICES'. To do so, implement any
+    However, a component may also specify 'sub-SERVICES'. To do so, implement any
     number of additional services methods (with the same interface as baseService()).
     Then list those methods in the 'SERVICES' dictionary (use any name as key to
     a tuple containing the method itself as well as a doc string). Then your
@@ -62,13 +62,13 @@ class BaseBean(object):
         like this: <resource_uri>/<sub_service_method>/....
     The name of the sub-service method is directly specified in the URI.
     
-    If you don't want your bean to provide a base service (a fall back that catches
+    If you don't want your component to provide a base service (a fall back that catches
     all request that are not handled by a sub-service method) then specify the
     BASE_SERVICE flag in the class a false.
     
     """
     NAME             = ""
-    """The name used to refer to this bean. Also used to construct its URL. No spaces allowed."""
+    """The name used to refer to this component. Also used to construct its URL. No spaces allowed."""
     PARAM_DEFINITION = dict()
     """The parameter definition in the form of a dictionary."""
     DESCRIPTION      = ""
@@ -76,7 +76,7 @@ class BaseBean(object):
     DOCUMENTATION    = ""
     """Longer, man-page style documentation."""
     BASE_SERVICE     = True
-    """Indicates that the bean provides a base service on the resource's base URI."""
+    """Indicates that the component provides a base service on the resource's base URI."""
     SERVICES         = None
     """A dictionary keying method name to docstring for exposed sub-service methods. May be left empty."""
     
@@ -105,7 +105,7 @@ class BaseBean(object):
         
     def httpSetCredentials(self, accountname, password):
         """
-        The bean author can set credentials for sites that require authentication.
+        The component author can set credentials for sites that require authentication.
         
         @param accountname:    Name of account
         @type accountname:     string
@@ -181,7 +181,7 @@ class BaseBean(object):
         Contains name, description, documentation URI and parameter
         definitions as dictionary.
         
-        @return: Meta info about the bean.
+        @return: Meta info about the component.
         @rtype:  dict
         
         """
@@ -195,7 +195,7 @@ class BaseBean(object):
         #
         # There is also a set of resource meta parameters that always remain
         # the same. Just some of the defaults and descriptions may change
-        # from bean to bean.
+        # from component to component.
         rp = dict(suggested_name = ParameterDef(PARAM_STRING,
                                                 "Can be used to suggest the resource name to the server",
                                                 required=True),
@@ -211,7 +211,7 @@ class BaseBean(object):
     
     def getName(self):
         """
-        Return the name of the bean.
+        Return the name of the component.
         
         @return:  Name
         @rtype:   string
@@ -221,7 +221,7 @@ class BaseBean(object):
 
     def getDesc(self):
         """
-        Return the brief description string of the bean.
+        Return the brief description string of the component.
         
         @return:  Description.
         @rtype:   string
@@ -231,7 +231,7 @@ class BaseBean(object):
     
     def getDocs(self):
         """
-        Return the documentation text for this bean.
+        Return the documentation text for this component.
         
         @return:  Documentation.
         @rtype:   string
@@ -241,9 +241,9 @@ class BaseBean(object):
 
     def getUri(self):
         """
-        Return the URI for this bean.
+        Return the URI for this component.
         
-        @return: URI for the bean.
+        @return: URI for the component.
         @rtype:  string
         
         """
@@ -251,7 +251,7 @@ class BaseBean(object):
     
     def getParams(self):
         """
-        Return the parameter definition for this bean.
+        Return the parameter definition for this component.
         
         @return: Parameter definition.
         @rtype:  dict (of ParameterDef objects)
@@ -263,7 +263,7 @@ class BaseBean(object):
     #
     # -------------------------------------------------------------------------------------
     # Following are some methods that are used by the framework and that are not part
-    # of the official bean-API.
+    # of the official component-API.
     # -------------------------------------------------------------------------------------
     #
     def _getServices(self, resource_base_uri=None):

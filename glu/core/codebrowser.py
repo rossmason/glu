@@ -9,45 +9,45 @@ import glujson as json
 import glu.settings as settings
 
 from glu.exceptions       import GluException
-from glu.beans            import _CODE_MAP
+from glu.components            import _CODE_MAP
 from glu.resources        import makeResource 
 from glu.core.basebrowser import BaseBrowser
 from glu.core.util        import Url
 
 
-def getBeanClass(uri):
+def getComponentClass(uri):
     """
-    Return the specified bean class, based on a given URI.
+    Return the specified component class, based on a given URI.
     
     @param uri:     The official URI for this code.
     @type uri:      string
     
-    @return         Class of the specified bean
-                    or None if no matching bean class was found.
-    @rtype          A class derived from BaseBean
+    @return         Class of the specified component
+                    or None if no matching component class was found.
+    @rtype          A class derived from BaseComponent
     
     """
     path_elems = uri[len(settings.PREFIX_CODE):].split("/")[1:]
-    bean_name  = path_elems[0]   # This should be the name of the code element
+    component_name  = path_elems[0]   # This should be the name of the code element
     
-    # Instantiate the bean
-    return _CODE_MAP.get(bean_name)
+    # Instantiate the component
+    return _CODE_MAP.get(component_name)
 
-def getBeanInstance(uri):
+def getComponentInstance(uri):
     """
-    Return an instantiated bean, the class of which was identified by a URI.
+    Return an instantiated component, the class of which was identified by a URI.
 
     @param uri:     The official URI for this code.
     @type uri:      string
     
-    @return         Instance of the specified bean
-                    or None if no matching bean class was found.
-    @rtype          Instance of a class derived from BaseBean
+    @return         Instance of the specified component
+                    or None if no matching component class was found.
+    @rtype          Instance of a class derived from BaseComponent
     
     """
-    bean_class = getBeanClass(uri)
-    if bean_class:
-        return bean_class()
+    component_class = getComponentClass(uri)
+    if component_class:
+        return component_class()
     else:
         return None
         
@@ -93,29 +93,29 @@ class CodeBrowser(BaseBrowser):
         else:
             # Path elements (the known code prefix is stripped off)
             path_elems = self.request.getRequestPath()[len(settings.PREFIX_CODE):].split("/")[1:]
-            bean_name  = path_elems[0]   # This should be the name of the code element
+            component_name  = path_elems[0]   # This should be the name of the code element
             
-            # Instantiate the bean
-            bean_class = getBeanClass(self.request.getRequestPath())
-            if not bean_class:
-                return (404, "Unknown bean")
-            bean          = bean_class()
-            bean_home_uri = bean.getUri()
-            self.breadcrums.append((bean_name, bean_home_uri))
+            # Instantiate the component
+            component_class = getComponentClass(self.request.getRequestPath())
+            if not component_class:
+                return (404, "Unknown component")
+            component          = component_class()
+            component_home_uri = component.getUri()
+            self.breadcrums.append((component_name, component_home_uri))
 
             if len(path_elems) == 1:
                 #
-                # No sub-detail specified: We want meta info about a code segment (bean)
+                # No sub-detail specified: We want meta info about a code segment (component)
                 #
-                data = bean.getMetaData()
+                data = component.getMetaData()
             else:
                 #
-                # Some sub-detail of the requested bean was requested
+                # Some sub-detail of the requested component was requested
                 #
                 sub_name = path_elems[1]
                 if sub_name == "doc":
-                    data       = bean.getDocs()
-                    self.breadcrums.append(("Doc", bean_home_uri + "/doc"))
+                    data       = component.getDocs()
+                    self.breadcrums.append(("Doc", component_home_uri + "/doc"))
                 else:
                     return (404, "Unknown code detail")
                 
@@ -127,7 +127,7 @@ class CodeBrowser(BaseBrowser):
         Process a POST request.
         
         The only allowed POST requests to code are requests
-        to the base URI of a bean. This creates a new resource.
+        to the base URI of a component. This creates a new resource.
         
         @return:  HTTP return code and data as a tuple.
         @rtype:   tuple
@@ -136,16 +136,16 @@ class CodeBrowser(BaseBrowser):
         #
         # Start by processing and sanity-checking the request.
         #
-        bean_class = getBeanClass(self.request.getRequestPath())
-        if not bean_class:
-            return (404, "Unknown bean")
-        #bean = bean_class()
+        component_class = getComponentClass(self.request.getRequestPath())
+        if not component_class:
+            return (404, "Unknown component")
+        #component = component_class()
         body = self.request.getRequestBody()
         try:
             param_dict = json.loads(body)
         except Exception, e:
             raise GluException("Malformed request body: " + str(e))
-        ret_msg = makeResource(bean_class, param_dict)
+        ret_msg = makeResource(component_class, param_dict)
         return ( 200, ret_msg )
     
     def process(self):

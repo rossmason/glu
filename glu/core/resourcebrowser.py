@@ -13,10 +13,10 @@ from glu.exceptions                import *
 from glu.logger                    import *
 from glu.core.basebrowser          import BaseBrowser
 from glu.core.util                 import Url
-from glu.core.codebrowser          import getBeanInstance
+from glu.core.codebrowser          import getComponentInstance
 from glu.resources                 import paramSanityCheck, fillDefaults, makeResource, listResources, \
                                           retrieveResourceFromStorage, getResourceUri
-from glu.resources.resource_runner import _accessBeanService, _getResourceDetails
+from glu.resources.resource_runner import _accessComponentService, _getResourceDetails
 
 class ResourceBrowser(BaseBrowser):
     """
@@ -74,7 +74,7 @@ class ResourceBrowser(BaseBrowser):
             resource_home_uri     = rinfo['resource_home_uri']
             public_resource_def   = rinfo['public_resource_def']
             code_uri              = rinfo['code_uri']
-            bean                  = rinfo['bean']
+            component                  = rinfo['component']
             services              = public_resource_def['services']
 
             if method == "GET":
@@ -83,8 +83,8 @@ class ResourceBrowser(BaseBrowser):
             # Was there more to access?
             if len(path_elems) > 1:
                 #
-                # Some sub-service of the bean was requested. This means
-                # we actually need to pass the parameters to the bean
+                # Some sub-service of the component was requested. This means
+                # we actually need to pass the parameters to the component
                 # and call this service function.
                 #
                 
@@ -94,7 +94,7 @@ class ResourceBrowser(BaseBrowser):
                 service_name = path_elems[1]
                 input        = self.request.getRequestBody()
                 try:
-                    code, data = _accessBeanService(bean, services, complete_resource_def,
+                    code, data = _accessComponentService(component, services, complete_resource_def,
                                                     resource_name, service_name, runtime_param_dict,
                                                     input, self.request)
                 except GluException, e:
@@ -104,7 +104,7 @@ class ResourceBrowser(BaseBrowser):
                     # The service code threw an exception. We need to log that and return a
                     # normal error back to the user.
                     print traceback.format_exc()
-                    log("Exception in bean for service '%s': %s" % (service_name, str(e)), facility=LOGF_BEANS)
+                    log("Exception in component for service '%s': %s" % (service_name, str(e)), facility=LOGF_COMPONENTS)
                     code, data = (500, "Internal server error. Details have been logged...")
                 if code != 404  and  method == "GET"  and  service_name in services:
                     self.breadcrums.append((service_name, services[service_name]['uri']))

@@ -1,5 +1,5 @@
 """
-A test bean.
+A test component.
 
 """
 # Python imports
@@ -9,10 +9,10 @@ import urllib
 import glujson as json
 
 # Glu imports
-from glu.beans.api import *
+from glu.components.api import *
 
-class GpsWalkerBean(BaseBean):
-    NAME             = "GpsWalkerBean"
+class GpsWalkerComponent(BaseComponent):
+    NAME             = "GpsWalkerComponent"
     PARAM_DEFINITION = {
                        }
     

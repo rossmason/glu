@@ -31,7 +31,7 @@ if PLATFORM == PLATFORM_GAE:
     STORAGE_OBJECT = GaeStorage()
 else:
     from glu.storageabstraction.file_storage import FileStorage
-    STORAGE_OBJECT = FileStorage("/tmp/rdb")
+    STORAGE_OBJECT = FileStorage("resourceDB")
 
 
 #
