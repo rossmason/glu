@@ -90,7 +90,8 @@ send_test({
 # Create the Combiner component
 send_test({
             'resource_creation_params' : {
-                'suggested_name' : 'Combiner'
+                'suggested_name' : 'Combiner',
+                'desc'           : "Just a test, don't use this one..."
             }
           },
           code_url=SERVER_URL + "/code/CombinerComponent")
