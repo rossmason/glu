@@ -22,6 +22,16 @@ class BaseStorage(object):
         """
         pass
 
+    def deleteResourceFromStorage(self, resource_name):
+        """
+        Delete the specified resource from storage.
+
+        @param resource_name:    Name of the selected resource.
+        @type resource_name:     string
+
+        """
+        pass
+
     def listResourcesInStorage(self):
         """
         Return list of resources which we currently have in storage.

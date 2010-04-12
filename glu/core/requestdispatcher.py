@@ -64,6 +64,8 @@ class RequestDispatcher(object):
                 (code, data) = ( 404, "404 Not found" )
         except GluMethodNotAllowed, e:
             (code, data) = e.code, e.msg
+        except GluMandatoryParameterMissing, e:
+            (code, data) = e.code, e.msg
         except GluException, e:
             (code, data) = ( 400, "Bad request: " + str(e))
         

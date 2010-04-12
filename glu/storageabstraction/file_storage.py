@@ -41,6 +41,26 @@ class FileStorage(object):
         obj = json.loads(buf)
         return obj
 
+    def deleteResourceFromStorage(self, resource_name):
+        """
+        Delete the specified resource from storage.
+
+        @param resource_name:    Name of the selected resource.
+        @type resource_name:     string
+
+        """
+        try:
+            os.remove(self.storage_location + "/" + resource_name)
+        except OSError, e:
+            if e.errno == 2:
+                raise GluResourceNotFound(resource_name)
+            elif e.errno == 13:
+                raise GluPermissionDenied(resource_name)
+            else:
+                raise GlException("Cannot delete resource '%s'" % resource_name)
+        except Exception, e:
+            raise GluException("Cannot delete resource '%s' (%s)" % (resource_name, str(e)))
+
     def listResourcesInStorage(self):
         """
         Return list of resources which we currently have in storage.

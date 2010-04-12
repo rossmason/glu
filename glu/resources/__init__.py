@@ -32,7 +32,7 @@ import os
 import glu.settings as settings
 from glu.platform_specifics import STORAGE_OBJECT
 
-from glu.exceptions       import GluException
+from glu.exceptions       import *
 from glu.logger           import *
 from glu.core.parameter   import TYPE_COMPATIBILITY
 from glu.core.util        import Url
@@ -91,6 +91,17 @@ def retrieveResourceFromStorage(uri, only_public=False):
         log("Malformed storage for resource '%s': %s" % (resource_name, str(e)), facility=LOGF_RESOURCES)
     return obj
 
+
+def deleteResourceFromStorage(uri):
+    """
+    Delete a resource definition from storage.
+
+    @param uri:   Uri of the resource
+    @type  uri:   string
+
+    """
+    resource_name = uri[len(settings.PREFIX_RESOURCE)+1:]
+    STORAGE_OBJECT.deleteResourceFromStorage(resource_name)
 
 def listResources():
     """
@@ -178,7 +189,7 @@ def paramSanityCheck(param_dict, param_def_dict, name_for_errors):
     #
     for pname, pdict in param_def_dict.items():
         if pdict['required']  and  (not param_dict  or  pname not in param_dict):
-            raise GluException("Missing mandatory parameter '%s' in section '%s'" % (pname, name_for_errors))
+            raise GluMandatoryParameterMissing("Missing mandatory parameter '%s' in section '%s'" % (pname, name_for_errors))
 
 def fillDefaults(param_def_dict, param_dict):
     """
@@ -341,4 +352,6 @@ def makeResource(component_class, params):
     }
 
     return success_body
+
+    
 

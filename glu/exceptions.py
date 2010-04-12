@@ -14,3 +14,15 @@ class GluMethodNotAllowed(GluException):
     code = 405
     msg  = "Method not allowed"
     
+class GluMandatoryParameterMissing(GluException):
+    code = 400
+    msg  = "Mandatory parameter missing"
+    
+class GluResourceNotFound(GluException):
+    code = 404
+    msg  = "Resource not found"
+    
+class GluPermissionDenied(GluException):
+    code = 400
+    msg  = "Permission denied"
+
