@@ -9,6 +9,7 @@ concrete HttpServer implementation later on.
 
 # Python imports
 import sys
+import httplib
 import StringIO
 import traceback
 
@@ -198,7 +199,7 @@ class PythonHttpRequest(BaseHttpRequest):
         
         """
         
-        self.write_callable = self.start_response('%d Foo' % self.__response_code, [])
+        self.write_callable = self.start_response('%d %s' % (self.__response_code, httplib.responses[self.__response_code]), [])
     
     def sendResponseBody(self):
         """

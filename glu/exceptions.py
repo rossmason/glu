@@ -23,6 +23,6 @@ class GluResourceNotFound(GluException):
     msg  = "Resource not found"
     
 class GluPermissionDenied(GluException):
-    code = 400
+    code = 403
     msg  = "Permission denied"
 
