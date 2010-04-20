@@ -56,6 +56,7 @@ class MetaBrowser(BaseBrowser):
                     "version"  : "(prototype)",
                     "doc"      : Url(settings.PREFIX_META + "/doc")
             }
+            code = 200
             
         elif path == settings.PREFIX_META + "/doc":
             self.breadcrums.append(("Doc", settings.PREFIX_META + "/doc"))
@@ -64,7 +65,9 @@ This is the documentation for the server.
 
 Click around and have fun.
 """
+            code = 200
         else:
             data = "Don't know this meta page"
+            code = 404
         
-        return ( 200, data )
+        return ( code, data )

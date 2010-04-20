@@ -121,7 +121,7 @@ def _getResourceDetails(resource_name):
     """
     complete_resource_def  = retrieveResourceFromStorage(getResourceUri(resource_name))
     if not complete_resource_def:
-        raise GluException("Unknown resource")
+        raise GluResourceNotFound("Unknown resource")
     resource_home_uri      = getResourceUri(resource_name)
     public_resource_def    = complete_resource_def['public']
     
