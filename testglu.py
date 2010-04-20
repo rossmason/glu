@@ -13,6 +13,13 @@ import snap_http_lib as http   # A decent URL library
 
 SERVER_URL = "http://localhost:8001"
 
+def _pretty_json(obj):
+    """
+    Output an object as pretty-printed JSON.
+
+    """
+    return json.dumps(obj, indent=4)
+
 def _get_data(relative_url):
     """
     Helper method accesses a URL on the server and returns the data (interprets the JSON).
@@ -35,6 +42,33 @@ def _get_data(relative_url):
     else:
         data = buf
     return (data, resp)
+
+def _send_data(relative_url, obj):
+    """
+    Helper method that POSTs an object to URL as JSON.
+
+    @param relative_url: The relative URL on the server. A starting slash may be
+                         specified, but either way, it's always interpreted to be
+                         relative to "/".
+    @type  relative_url: string
+
+    @param obj:          The object to be parsed to JSON and sent.
+    @type obj:           object
+
+    @return:             The JSON interpreted data and the response object as a tuple.
+    @rtype               tuple
+
+    """
+    if relative_url.startswith("/"):
+        relative_url = relative_url[1:]
+    resp = http.urlopen("POST", SERVER_URL + "/" + relative_url, headers={"Accept" : "application/json"}, data=json.dumps(obj))
+    buf = resp.read()
+    if resp.getStatus() >= 200 and resp.getStatus() <= 300:
+        data = json.loads(buf)
+    else:
+        data = buf
+    return (data, resp)
+
 
 def _delete(relative_url):
     """
@@ -150,6 +184,7 @@ def test_40_twitter_code():
 
     """
     cdef, resp = _get_data("/code/TwitterComponent")
+
     assert(resp.getStatus() == 200)
 
     expected_keys = [ "desc", "doc", "name", "params", "resource_creation_params", "services", "uri" ]
@@ -213,6 +248,34 @@ def test_40_twitter_code():
     } 
 
     _dict_compare(cdef['services'], services_def)
+
+
+def test_45_twitter_doc():
+    """
+    Test that we can retrieve a document at the doc URI of a component.
+
+    """
+    cdef, resp = _get_data("/code/TwitterComponent")
+    doc_uri    = cdef['doc']
+    doc, resp  = _get_data(doc_uri)
+    assert(type(doc) in [ string, unicode ])
+    assert("Twitter" in doc)
+    
+
+def test_50_make_resource():
+    """
+    Test creation of a new resource.
+
+    """
+    cdef, resp = _get_data("/code/TwitterComponent")
+    d = {
+            "params"                   : { "account_password" : "Foo", "account_name" : " Bar" },
+            "resource_creation_params" : { "suggested_name" : "foobar" }
+        }
+    data, resp = _send_data("/code/TwitterComponent", d)
+    assert(resp.getStatus() == 201)
+
+
 
 
 def test_999_cleanup():

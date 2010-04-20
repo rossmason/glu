@@ -146,7 +146,7 @@ class CodeBrowser(BaseBrowser):
         except Exception, e:
             raise GluException("Malformed request body: " + str(e))
         ret_msg = makeResource(component_class, param_dict)
-        return ( 200, ret_msg )
+        return ( 201, ret_msg )
     
     def process(self):
         """

@@ -55,7 +55,7 @@ class RequestDispatcher(object):
             if browser_class:
                 browser_instance = browser_class(request)
                 ( code, data )   = browser_instance.process()
-                if code == 200:
+                if code >= 200  and  code < 300:
                     # If all was OK with the request then we will
                     # render the output in the format that was
                     # requested by the client.
