@@ -81,15 +81,15 @@ class BaseBrowser(object):
                       that the output should be in HTML.
         @type data:   object
         
-        @return:      Rendered data, ready to be sent to the client.
-        @rtype:       string
+        @return:      Tuple with content type and Endered data, ready to be sent to the client.
+        @rtype:       tuple of (string, string)
 
         """
         if self.human_client:
-            renderer = HtmlRenderer(self.renderer_args, self.breadcrums)
+            renderer     = HtmlRenderer(self.renderer_args, self.breadcrums)
         else:
             renderer = JsonRenderer(self.renderer_args)
-        return renderer.base_renderer(data, top_level=True)
+        return renderer.CONTENT_TYPE, renderer.base_renderer(data, top_level=True)
     
     def process(self):
         """

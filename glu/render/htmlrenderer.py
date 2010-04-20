@@ -24,6 +24,8 @@ class HtmlRenderer(BaseRenderer):
         * no_border (no table and cell borders)
     
     """
+    CONTENT_TYPE = "text/html"
+
     def __init__(self, renderer_args, breadcrums):
         """
         Initialize the renderer.

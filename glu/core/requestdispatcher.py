@@ -39,11 +39,12 @@ class RequestDispatcher(object):
         @param request:   A properly wrapped request.
         @type request:    BaseHttpRequest
         
-        @return:          Response code and body
-        @rtype:           Tuple of (int, string)
+        @return:          Response code, body and headers
+        @rtype:           Tuple of (int, string, dict)
         
         """
         #print "---- ", request.getRequestHeaders()
+        content_type = None
         try:
             if request.getRequestPath() == "/":
                 browser_class = BROWSER_MAP['/meta']
@@ -59,7 +60,7 @@ class RequestDispatcher(object):
                     # If all was OK with the request then we will
                     # render the output in the format that was
                     # requested by the client.
-                    data = browser_instance.renderOutput(data)
+                    content_type, data = browser_instance.renderOutput(data)
             else:
                 (code, data) = ( 404, "404 Not found" )
         except GluMethodNotAllowed, e:
@@ -70,5 +71,10 @@ class RequestDispatcher(object):
             (code, data) = e.code, e.msg
         except GluException, e:
             (code, data) = ( 400, "Bad request: " + str(e))
+
+        headers = dict()
+        if content_type:
+            headers["Content-type"] = content_type
         
-        return (code, data)  
+        return (code, data, headers)
+

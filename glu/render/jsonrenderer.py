@@ -65,6 +65,8 @@ class JsonRenderer(BaseRenderer):
     Class to render data as JSON.
         
     """
+    CONTENT_TYPE = "application/json"
+
     def render(self, data, top_level=False):
         """
         Render the provided data for output.

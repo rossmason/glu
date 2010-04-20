@@ -38,8 +38,9 @@ class PythonHttpRequest(BaseHttpRequest):
     the specific server implementation.
     
     """
-    __response_code   = None
-    __request_headers = None
+    __response_code    = None
+    __request_headers  = None
+    __response_headers = dict()
     
     def __init__(self, environ, start_response):
         """
@@ -76,7 +77,20 @@ class PythonHttpRequest(BaseHttpRequest):
         
         """
         self.__response_body = body
-                     
+
+    def setResponseHeader(self, name, value):
+        """
+        Set a header for this response.
+
+        @param name:    Name of the header.
+        @type name:     string
+
+        @param value:   Value for the header.
+        @type value:    string
+
+        """
+        self.__response_headers[name] = value
+
     def setResponse(self, code, body):
         """
         Set response code and body in one function.
@@ -199,7 +213,8 @@ class PythonHttpRequest(BaseHttpRequest):
         
         """
         
-        self.write_callable = self.start_response('%d %s' % (self.__response_code, httplib.responses[self.__response_code]), [])
+        self.write_callable = self.start_response('%d %s' % (self.__response_code, httplib.responses[self.__response_code]),
+                                                   self.__response_headers.items())
     
     def sendResponseBody(self):
         """
@@ -246,7 +261,9 @@ class _HttpHandler(object):
                                     req.getRequestMethod(),
                                     req.getRequestURI())
             #log(msg, facility=LOGF_ACCESS_LOG)
-            code, response_body = self.request_handler.handle(req)
+            code, response_body, headers = self.request_handler.handle(req)
+            for name, value in headers.items():
+                req.setResponseHeader(name, value)
             req.setResponse(code, response_body)
             req.sendResponse()
             req.close()
