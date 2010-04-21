@@ -1,6 +1,6 @@
 
 import sys
-import json
+import glujson as json
 import time
 import types
 import string

@@ -45,7 +45,9 @@ class _HttpHandler(object):
                                     req.getRequestMethod(),
                                     req.getRequestURI())
             #log(msg, facility=LOGF_ACCESS_LOG)
-            code, response_body = self.request_handler.handle(req)
+            code, response_body, headers = self.request_handler.handle(req)
+            for name, value in headers.items():
+                req.setResponseHeader(name, value)
             req.setResponse(code, response_body)
             req.sendResponse()
             req.close()

@@ -40,10 +40,11 @@ class JythonJavaHttpRequest(BaseHttpRequest):
     the specific server implementation.
     
     """
-    __response_code   = None
-    __native_req      = None
-    __request_uri_str = None
-    __request_headers = None
+    __response_code    = None
+    __native_req       = None
+    __request_uri_str  = None
+    __request_headers  = None
+    __response_headers = dict()
     
     def __init__(self, native_request):
         """
@@ -87,6 +88,18 @@ class JythonJavaHttpRequest(BaseHttpRequest):
         """
         self.__response_body = String(body)
         
+    def setResponseHeader(self, name, value):
+        """
+        Set a header for this response.
+
+        @param name:    Name of the header.
+        @type name:     string
+
+        @param value:   Value for the header.
+        @type value:    string
+
+        """
+        self.__response_headers[name] = value
                     
     def setResponse(self, code, body):
         """
@@ -200,6 +213,9 @@ class JythonJavaHttpRequest(BaseHttpRequest):
         Send the previously specified response headers and code.
         
         """
+        response_headers = self.__native_req.getResponseHeaders()
+        for name, value in self.__response_headers.items():
+            response_headers[name] = [ value ]
         self.__native_req.sendResponseHeaders(self.__response_code, self.__response_body.length())
     
     def sendResponseBody(self):
@@ -281,7 +297,9 @@ class __HttpHandler(HttpHandler):
                                     req.getRequestMethod(),
                                     req.getRequestURI())
             #log(msg, facility=LOGF_ACCESS_LOG)
-            code, response_body = self.request_handler.handle(req)
+            code, response_body, headers = self.request_handler.handle(req)
+            for name, value in headers.items():
+                req.setResponseHeader(name, value)
             req.setResponse(code, response_body)
             req.sendResponse()
             native_request.close()
@@ -289,7 +307,7 @@ class __HttpHandler(HttpHandler):
             td         = end_time-start_time
             request_ms = td.seconds*1000 + td.microseconds//1000
             log("%s : %sms : %s : %s" % (msg, request_ms, code, len(response_body)),
-                start_time = start_time, facility=LOGF_ACCESS_LOG)
+                                         start_time = start_time, facility=LOGF_ACCESS_LOG)
         except Exception, e:
             print traceback.format_exc()
             sys.exit(1)
