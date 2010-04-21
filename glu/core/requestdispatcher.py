@@ -70,7 +70,7 @@ class RequestDispatcher(object):
         except GluResourceNotFound, e:
             (code, data) = e.code, e.msg
         except GluException, e:
-            (code, data) = ( 400, "Bad request: " + str(e))
+            (code, data) = ( 400, "Bad request: " + e.msg)
 
         headers = dict()
         if content_type:

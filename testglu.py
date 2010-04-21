@@ -268,15 +268,85 @@ def test_50_make_resource():
 
     """
     cdef, resp = _get_data("/code/TwitterComponent")
+
     d = {
-            "params"                   : { "account_password" : "Foo", "account_name" : " Bar" },
-            "resource_creation_params" : { "suggested_name" : "foobar" }
+            "foo"                   : { "blah" : 123 },
+        }
+    data, resp = _send_data("/code/TwitterComponent", d)
+    assert(resp.getStatus() == 400)
+    assert("Malformed resource parameter definition. Unknown key: foo" in data)
+
+    d = {
+            "params"                   : { "account_password" : "Foo", "account_name" : "Bar" },
+        }
+    data, resp = _send_data("/code/TwitterComponent", d)
+    assert(resp.getStatus() == 400)
+    assert("Missing mandatory parameter 'suggested_name' in section 'resource_creation_params'" in data)
+
+    d = {
+            "params"                   : { "account_password" : "Foo" },
+        }
+    data, resp = _send_data("/code/TwitterComponent", d)
+    assert(resp.getStatus() == 400)
+    assert("Missing mandatory parameter 'account_name' in section 'params'" in data)
+
+    d = {
+            "params"                   : { "account_password" : 123 },
+        }
+    data, resp = _send_data("/code/TwitterComponent", d)
+    assert(resp.getStatus() == 400)
+    assert("Incompatible type for parameter 'account_password' in section 'params'" in data)
+
+    d = {
+            "params"                   : { "blah" : 123 },
+        }
+    data, resp = _send_data("/code/TwitterComponent", d)
+    assert(resp.getStatus() == 400)
+    assert("Unknown parameter in 'params' section: blah" in data)
+
+    d = {
+            "params"                   : { "account_password" : "Foo", "account_name" : "Bar" },
+            "resource_creation_params" : { "suggested_name" : "foobar", "blah" : 123 }
+        }
+    data, resp = _send_data("/code/TwitterComponent", d)
+    assert("Unknown parameter in 'resource_creation_params' section: blah" in data)
+    assert(resp.getStatus() == 400)
+
+    d = {
+            "params"                   : { "account_password" : "Foo", "account_name" : "Bar" },
+            "resource_creation_params" : { "suggested_name" : "_test_foobar", "desc" : "A foobar resource" }
         }
     data, resp = _send_data("/code/TwitterComponent", d)
     assert(resp.getStatus() == 201)
+    assert(data['status']   == "created")
+    assert(data['name']     == "_test_foobar")
+    assert(data['uri']      == "/resource/_test_foobar")
+    assert(len(data)        == 3)
 
+def test_60_examine_resource():
+    """
+    Test retrieval of information about a reosurce.
 
+    """
+    data, resp = _get_data("/resource/_test_foobar")
+    assert(resp.getStatus() == 200)
 
+    resource_def = {
+        "services": {
+            "status": {
+                "uri": "/resource/_test_foobar/status", 
+                "desc": "You can GET the status or POST a new status to it."
+            }, 
+            "timeline": {
+                "uri": "/resource/_test_foobar/timeline", 
+                "desc": "You can GET the timeline of the user."
+            }
+        }, 
+        "uri": "/resource/_test_foobar", 
+        "name": "_test_foobar", 
+        "desc": "A foobar resource"
+    }
+    _dict_compare(data, resource_def)
 
 def test_999_cleanup():
     """
@@ -290,11 +360,9 @@ def test_999_cleanup():
     # Find any old test resources and delete them.
     for name in rlist:
         if name.startswith("_test_"):
-            uri = rlist[name]
-            buf, resp = _delete(uri)
+            info = rlist[name]
+            buf, resp = _delete(info['uri'])
             assert(resp.getStatus() == 200)
-
-
 
 
 #
