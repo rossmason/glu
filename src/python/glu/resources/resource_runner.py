@@ -14,8 +14,8 @@ def _accessComponentService(component, services, complete_resource_def, resource
     """
     Passes control to a service method exposed by a component.
     
-    @param component:                  An instance of the component.
-    @type component:                   BaseComponent (object of child class)
+    @param component:             An instance of the component.
+    @type component:              BaseComponent (object of child class)
     
     @param services:              Dictionary of services definitions for this component. Can be had
                                   by calling _getServices() on the component. But we would need the
@@ -98,7 +98,7 @@ def _accessComponentService(component, services, complete_resource_def, resource
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:
         if direct_call:
-            raise Exception(str(e))
+            raise Exception(e.msg)
         else:
             raise e
     

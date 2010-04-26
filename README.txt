@@ -6,31 +6,37 @@ Files
 =====
 You can see the following files and directories:
 
-glu/            Contains most of the source code. starter.py and glujson.py
-                are the exceptions. They are described below.
+src/            Contains the source code
 
-static_files/   The directory from where the Glu erver can serve static files.
+src/python      Contains the Python code (this includes some test utilities).
+                The glu/ directory there contains most of the code. starter.py
+                and glujson.py are the exception.
 
-starter.py      The start script for the Glu server. It is outside of the
+src/python/starter.py      The start script for the Glu server. It is outside of the
                 glu/ directory, because this is going to change depending on
                 whether Glu runs in a container or standalone.
 
-glujson.py      It's very annoying that this file is even necessary. The reason
+src/python/glujson.py      It's very annoying that this file is even necessary. The reason
                 is that we would like to use JSON, but the available JSON
                 library is different depending on the runtime: jython, python
                 or Google AppEngine. It imports the 'right' JSON for each
                 case. This file will eventually go away once we have it
                 ported to pure Java, I assume.
 
-glu_make_sample_resources.py    This is a small utility that creates some
+src/python/glu_make_sample_resources.py    This is a small utility that creates some
                                 resources on a running server. It's not fancy
                                 and was just created for testing.
 
+
+src/java        Contains the Java code
+
+static_files/   The directory from where the Glu erver can serve static files.
+
 app.yaml        This file is used for Google AppEngine. It contains the
-                configuration for the application on GAE.
+                configuration for the application on GAE. OUTDATED!
 
 index.yaml      This file is used for Google AppEngine. It's automatically
-                updated by the GAE tools.
+                updated by the GAE tools. OUTDATED!
 
 
 
@@ -63,7 +69,7 @@ Pure Python
 
 5. Start the Glu server:
 
-    % python glu/starter.py
+    % python src/python/starter.py
 
 
 Jython
@@ -90,10 +96,10 @@ Jython
 
 4. Start the Glu server:
 
-    % jython glu/starter.py
+    % jython src/python/starter.py
 
 
-Google AppEngine
+Google AppEngine (OUTDATED!)
 ----------------
 0. Tell Glu that you are running on AppEngine:
    Edit glu/platform_specifics.py and make sure that

@@ -109,7 +109,7 @@ class ResourceBrowser(BaseBrowser):
                                                     input, self.request)
                 except GluException, e:
                     code = e.code
-                    data = str(e)
+                    data = e.msg
                 except Exception, e:
                     # The service code threw an exception. We need to log that and return a
                     # normal error back to the user.
@@ -126,3 +126,4 @@ class ResourceBrowser(BaseBrowser):
                 data = public_resource_def
 
         return (code, data)
+
