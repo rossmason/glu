@@ -4,4 +4,6 @@
 *#
 *.swp
 resourceDB/*
+src/python/resourceDB
+src/python/static_files
 

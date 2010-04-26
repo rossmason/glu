@@ -120,3 +120,92 @@ Google AppEngine (OUTDATED!)
 
      % python appcfg.py update glu/
 
+
+Development of mixed Jython/Java project in Eclipse
+===================================================
+This describes the necessary steps to be taken in Eclipse in order to
+develop Glu as a mixed Jython/Java project.
+
+0. The following pre-requisites are assumed:
+    - You have checked out the Glu project somewhere. Hereafter, we will
+      refer to the directory which was created during the checkout as "$GLU".
+    - You have installed PyDev and Jython as described here:
+      http://corp.wiki.mulesource.com/display/MULEDEV/Working+with+Python
+
+1. Start a PyDev project and call it 'Glu_Python' (switch to the PyDev perspective for this).
+
+2. Set the 'src' folder for this project to be $GLU/src/python. There is
+   probably a neat way to do this in Eclipse (creating folder resources and
+   referencing this somehow?), but it seems that PyDev is a bit more limited
+   than a normal Java project. So, instead I just created a symbolic link to that
+   external source directory in the $GLU folder:
+
+        a. Go to the $WORKSPACE/Glu_Python directory.
+        b. % rmdir src
+        c. % ln -s $GLU/src/python src
+        d. Refresh the project in Eclipse.
+
+3. Start a Java project and call it 'Glu_Java' (switch to the Java perspective for this).
+
+4. Set the 'src' folder for this project to be $GLU/src/java. For Java Eclipse
+   offers other ways to include external folders. However, to keep things uniform
+   I have simply used the symbolic link approach that I used for Python:
+
+        a. Go to the $WORKSPACE/Glu_Java directory.
+        b. % rmdir src
+        c. % ln -s $GLU/src/java src
+        d. Refresh the project in Eclipse.
+
+   You should see the 'org.mulesource.glu' package and the sample FooBar.java file.
+
+5. Tell the system where to find your resources folder. For this, edit the file
+   $GLU/src/python/glu/platform_specifics.py
+
+   Locate the definition of STORAGE_OBJECT. Specifically the line:
+
+        STORAGE_OBJECT = FileStorage("resourceDB")
+
+   Edit the 'resourceDB' to be the absolute path for your resource directory.
+   When you check out Glu you find a 'resourceDB' directory created within $GLU.
+   You could therefore edit this to read "$GLU/resourceDB" (unless you set $GLU
+   as a variable for the project, you'd have to expand that part of the path
+   name manually).
+
+   Alternatively, we can just use a link again. Since we start the server
+   by running '$GLU/src/python/starter.py' we can create a symbolic link in
+   $GLU/src/python to point to the actual location of the 'resourceDB' directory:
+
+        % ln -s $GLU/resourceDB $GLU/src/python/resourceDB
+
+   The advantage of this approach is that you don't have to edit the source
+   file at all.
+
+6. Use the same approach to tell Glu where to find the static_file folder.
+   Either edit the $GLU/settings.py file and modify the STATIC_LOCATION variable,
+   or create another symbolic link without editing any source:
+
+        % ln -s $GLU/static_files $GLU/src/python/static_files
+
+7. Right click on the 'Glu_Java' project, find the 'PyDev' menu item and select
+   'Set as PyDev Project'.
+
+8. Right click on the 'Glu_Python' project and select 'New->SourceFolder'.
+   Chose to add the 'bin' folder from the 'Test_Java' project by specifying 'Test_Java'
+   as the project name and 'bin' as the folder name.
+
+9. Set 'Glu_Java' as a project reference for 'Glu_Python'.
+
+10. Test that your project works by right-clicking on 'starter.py' in your
+    'Glu_Python' project (in the src/glu folder) and selecting 'Run As -> Jython Run'.
+
+    After a short while you should see the server's startup message appear, informing
+    you that it listens on port 8001. You should then be able to take your web browser
+    to http://localhost:8001 and connect to the Glu server.
+
+
+
+
+
+
+
+
