@@ -158,7 +158,16 @@ develop Glu as a mixed Jython/Java project.
 
    You should see the 'org.mulesource.glu' package and the sample FooBar.java file.
 
-5. Tell the system where to find your resources folder. For this, edit the file
+5. Right click on the 'Glu_Java' project, find the 'PyDev' menu item and select
+   'Set as PyDev Project'.
+
+6. Right click on the 'Glu_Python' project and select 'New->SourceFolder'.
+   Chose to add the 'bin' folder from the 'Test_Java' project by specifying 'Test_Java'
+   as the project name and 'bin' as the folder name.
+
+7. Set 'Glu_Java' as a project reference for 'Glu_Python'.
+
+8. Tell the system where to find your resources folder. For this, edit the file
    $GLU/src/python/glu/platform_specifics.py
 
    Locate the definition of STORAGE_OBJECT. Specifically the line:
@@ -180,20 +189,11 @@ develop Glu as a mixed Jython/Java project.
    The advantage of this approach is that you don't have to edit the source
    file at all.
 
-6. Use the same approach to tell Glu where to find the static_file folder.
+9. Use the same approach to tell Glu where to find the static_file folder.
    Either edit the $GLU/settings.py file and modify the STATIC_LOCATION variable,
    or create another symbolic link without editing any source:
 
         % ln -s $GLU/static_files $GLU/src/python/static_files
-
-7. Right click on the 'Glu_Java' project, find the 'PyDev' menu item and select
-   'Set as PyDev Project'.
-
-8. Right click on the 'Glu_Python' project and select 'New->SourceFolder'.
-   Chose to add the 'bin' folder from the 'Test_Java' project by specifying 'Test_Java'
-   as the project name and 'bin' as the folder name.
-
-9. Set 'Glu_Java' as a project reference for 'Glu_Python'.
 
 10. Test that your project works by right-clicking on 'starter.py' in your
     'Glu_Python' project (in the src/glu folder) and selecting 'Run As -> Jython Run'.
