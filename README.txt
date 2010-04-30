@@ -1,6 +1,9 @@
 
 This is Glu.
 
+Specifically, this is the pure Python version of Glu.
+
+
 
 Files
 =====
