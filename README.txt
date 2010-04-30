@@ -1,7 +1,8 @@
 
 This is Glu.
 
-This is the Python version of Glu. The Java port happens in the main branch.
+This is OUT OF DATE while the port to Java is in progress.
+
 
 
 Files
