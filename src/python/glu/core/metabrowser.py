@@ -2,7 +2,7 @@
 Allows users and clients to browse the server's meta information.
 
 """
-import glu.settings as settings
+from org.mulesource.glu   import Settings
 
 from glu.core.basebrowser import BaseBrowser
 from glu.core.util        import Url
@@ -46,7 +46,8 @@ class MetaBrowser(BaseBrowser):
         """
         self.breadcrums = [ ("Home","/") ]
 
-        path = self.request.getRequestPath()
+        path     = self.request.getRequestPath()
+        settings = Settings.getSettingsObject()
         if path in [ "/", settings.PREFIX_META ]:
             data = {
                     "code"     : Url(settings.PREFIX_CODE),

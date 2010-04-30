@@ -2,7 +2,7 @@
 Serves static files.
 
 """
-import glu.settings as settings
+from org.mulesource.glu   import Settings
 
 from glu.core.basebrowser import BaseBrowser
 
@@ -42,6 +42,7 @@ class StaticBrowser(BaseBrowser):
         @rtype:   tuple
         
         """
+        settings = Settings.getSettingsObject()
         path = self.request.getRequestPath()[len(settings.PREFIX_STATIC)+1:]
         if ".." in path:
             # Won't allow that

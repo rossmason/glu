@@ -1,6 +1,8 @@
 
 This is Glu.
 
+This is the Python version of Glu. The Java port happens in the main branch.
+
 
 Files
 =====

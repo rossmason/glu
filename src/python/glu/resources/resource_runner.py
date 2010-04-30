@@ -5,7 +5,8 @@ import glu.core.codebrowser  # Wanted to be much more selective here, but a circ
                              # import issue was most easily resolved like this.
                              # We only need getComponentInstance() from this module.
 
-from glu.exceptions import *
+from org.mulesource.glu.exceptions import *
+
 from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
                            retrieveResourceFromStorage, getResourceUri
 
@@ -121,7 +122,7 @@ def _getResourceDetails(resource_name):
     """
     complete_resource_def  = retrieveResourceFromStorage(getResourceUri(resource_name))
     if not complete_resource_def:
-        raise GluResourceNotFound("Unknown resource")
+        raise GluResourceNotFoundException("Unknown resource")
     resource_home_uri      = getResourceUri(resource_name)
     public_resource_def    = complete_resource_def['public']
     

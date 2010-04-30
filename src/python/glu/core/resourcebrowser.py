@@ -7,9 +7,9 @@ import os
 import traceback
 
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu            import Settings
+from org.mulesource.glu.exceptions import *
 
-from glu.exceptions                import *
 from glu.logger                    import *
 from glu.core.basebrowser          import BaseBrowser
 from glu.core.util                 import Url
@@ -55,6 +55,7 @@ class ResourceBrowser(BaseBrowser):
             except GluException, e:
                 return (e.code, str(e))
 
+        settings = Settings.getSettingsObject()
         if method == "GET":
             # It's the responsibility of the browser class to provide breadcrums
             self.breadcrums = [ ("Home", settings.DOCUMENT_ROOT), ("Resource", settings.PREFIX_RESOURCE) ]
@@ -70,7 +71,7 @@ class ResourceBrowser(BaseBrowser):
                 #
                 data = listResources()
             else:
-                raise GluMethodNotAllowed()
+                raise GluMethodNotAllowedException()
             
         else:
             # Path elements (the known resource prefix is stripped off)
@@ -108,8 +109,8 @@ class ResourceBrowser(BaseBrowser):
                                                     resource_name, service_name, runtime_param_dict,
                                                     input, self.request)
                 except GluException, e:
-                    code = e.code
-                    data = e.msg
+                    code = e.getCode()
+                    data = e.getMessage()
                 except Exception, e:
                     # The service code threw an exception. We need to log that and return a
                     # normal error back to the user.
@@ -122,7 +123,7 @@ class ResourceBrowser(BaseBrowser):
             else:
                 # No, nothing else. Someone just wanted to know more about the resource.
                 if method == "POST":
-                    raise GluMethodNotAllowed()
+                    raise GluMethodNotAllowedException()
                 data = public_resource_def
 
         return (code, data)

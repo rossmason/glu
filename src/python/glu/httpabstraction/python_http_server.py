@@ -6,7 +6,7 @@ being spread all over the place. That way, we can always change the
 concrete HttpServer implementation later on.
 
 """
-
+'''
 # Python imports
 import sys
 import httplib
@@ -14,8 +14,6 @@ import StringIO
 import traceback
 
 # Glu imports
-import glu.settings as settings
-
 from glu.logger import *
 
 from glu.httpabstraction.base_server import BaseHttpServer, BaseHttpRequest
@@ -317,3 +315,4 @@ class PythonHttpServer(BaseHttpServer):
         log("Listening for HTTP requests on port %d..." % port)
         httpserver.serve(_app_method, host="0.0.0.0", port=port)
 
+'''

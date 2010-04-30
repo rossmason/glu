@@ -3,7 +3,7 @@ Base class for all content browser classes.
 
 """
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu import Settings
 
 from glu.render import HtmlRenderer
 from glu.render import JsonRenderer
@@ -45,7 +45,8 @@ class BaseBrowser(object):
         self.request       = request
         self.headers       = request.getRequestHeaders()
         accept_header      = self.headers.get("Accept", list())
-        self.human_client  = False if "application/json" in accept_header or settings.NEVER_HUMAN else True
+        self.human_client  = False if "application/json" in accept_header or \
+                                                            Settings.getSettingsObject().NEVER_HUMAN else True
         self.header        = ""
         self.footer        = ""
         self.renderer_args = renderer_args

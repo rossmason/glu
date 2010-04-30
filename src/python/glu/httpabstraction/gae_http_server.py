@@ -6,7 +6,7 @@ being spread all over the place. That way, we can always change the
 concrete HttpServer implementation later on.
 
 """
-
+'''
 # Python imports
 import sys
 import StringIO
@@ -16,7 +16,7 @@ import traceback
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu import Settings
 from glu.httpabstraction.python_http_server import PythonHttpRequest
 
 from glu.logger import *
@@ -104,3 +104,4 @@ class GaeHttpServer(BaseHttpServer):
         log("Listening for HTTP requests...")
         run_wsgi_app(_app_method)
 
+'''

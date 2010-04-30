@@ -4,9 +4,9 @@ to the appropriate browsers.
 
 """
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu            import Settings
+from org.mulesource.glu.exceptions import *
 
-from glu.exceptions             import *
 from glu.core.basebrowser       import BaseBrowser
 from glu.core.staticbrowser     import StaticBrowser
 from glu.core.metabrowser       import MetaBrowser
@@ -14,10 +14,10 @@ from glu.core.codebrowser       import CodeBrowser
 from glu.core.resourcebrowser   import ResourceBrowser 
 
 BROWSER_MAP   = {
-                    settings.PREFIX_META     : MetaBrowser,
-                    settings.PREFIX_RESOURCE : ResourceBrowser,
-                    settings.PREFIX_CODE     : CodeBrowser,
-                    settings.PREFIX_STATIC   : StaticBrowser,
+                    Settings.getSettingsObject().PREFIX_META     : MetaBrowser,
+                    Settings.getSettingsObject().PREFIX_RESOURCE : ResourceBrowser,
+                    Settings.getSettingsObject().PREFIX_CODE     : CodeBrowser,
+                    Settings.getSettingsObject().PREFIX_STATIC   : StaticBrowser,
                 }
             
 class RequestDispatcher(object):
@@ -63,14 +63,14 @@ class RequestDispatcher(object):
                     content_type, data = browser_instance.renderOutput(data)
             else:
                 (code, data) = ( 404, "404 Not found" )
-        except GluMethodNotAllowed, e:
-            (code, data) = e.code, e.msg
-        except GluMandatoryParameterMissing, e:
-            (code, data) = e.code, e.msg
-        except GluResourceNotFound, e:
-            (code, data) = e.code, e.msg
+        except GluMethodNotAllowedException, e:
+            (code, data) = e.getCode(), e.getMessage()
+        except GluMandatoryParameterMissingException, e:
+            (code, data) = e.getCode(), e.getMessage()
+        except GluResourceNotFoundException, e:
+            (code, data) = e.getCode(), e.getMessage()
         except GluException, e:
-            (code, data) = ( 400, "Bad request: " + e.msg)
+            (code, data) = ( 400, "Bad request: " + e.getMessage())
 
         headers = dict()
         if content_type:

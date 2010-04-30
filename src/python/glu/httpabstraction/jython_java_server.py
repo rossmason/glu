@@ -11,7 +11,7 @@ concrete HttpServer implementation later on.
 from com.sun.net.httpserver import HttpServer, HttpHandler
 from java.net               import InetSocketAddress
 from java.lang              import String
-from java.io                import InputStreamReader;
+from java.io                import InputStreamReader
 from java.io                import BufferedReader
 from java.io                import DataOutputStream
 
@@ -20,7 +20,7 @@ import sys
 import traceback
 
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu   import Settings
 
 from glu.logger import *
 
@@ -339,7 +339,7 @@ class JythonJavaHttpServer(BaseHttpServer):
         """
         self.request_handler = request_handler
         self.__native_server = HttpServer.create(InetSocketAddress(port), 5);
-        self.__native_server.createContext(settings.DOCUMENT_ROOT,
+        self.__native_server.createContext(Settings.getSettingsObject().DOCUMENT_ROOT,
                                            __HttpHandler(request_handler));
         self.__native_server.setExecutor(None);
         self.__native_server.start();

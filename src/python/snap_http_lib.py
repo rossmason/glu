@@ -406,7 +406,7 @@ class HttpResponse:
             print "SnapHttpLib.HttpResponse.__init__(): Exception: " + str(e)
             raise e
         
-    def sock():
+    def sock(self):
         """The socket inside HttpConnection of HttpResponse (depending on object which is active)"""
         doc = "Socket wrapped by HttpResponse or HttpConnection."
         def fget(self):

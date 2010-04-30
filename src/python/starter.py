@@ -2,20 +2,20 @@
 Simple starter for stand-alone Glu server.
 
 """
+from java.lang import String
+
 import time
 
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu     import Settings
+
 from glu.core               import RequestDispatcher
 from glu.platform_specifics import *
-
-from org.mulesource.glu import FooBar
-
+#from java.lang import Exception
 
 if __name__ == '__main__':
-    f = FooBar()
-    f.foo()
     
+    settings  = Settings.getSettingsObject()
     my_server = HttpServer(settings.LISTEN_PORT, RequestDispatcher())
 
     # For the Java server: Need to wait forever, since otherwise

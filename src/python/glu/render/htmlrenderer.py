@@ -7,7 +7,7 @@ from copy   import copy
 import string
 
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu      import Settings
 
 from glu.render.baserenderer import BaseRenderer
 from glu.core.util           import Url, bool_view
@@ -47,7 +47,7 @@ class HtmlRenderer(BaseRenderer):
         self.draw_borders, self.border_width = (False,0) if self.renderer_args.get('no_borders') else (True,1)
         self.breadcrums       = breadcrums
         
-        self.header = settings.HTML_HEADER + \
+        self.header = Settings.getSettingsObject().HTML_HEADER + \
                       '%s<br><hr>' % (self.__render_breadcrums(self.breadcrums))
                       
                       
@@ -204,5 +204,5 @@ class HtmlRenderer(BaseRenderer):
         else:
             out += self.__plain_render(data)
         if top_level:
-            out = "%s%s%s" % (self.header, out, settings.HTML_FOOTER)
+            out = "%s%s%s" % (self.header, out, Settings.getSettingsObject().HTML_FOOTER)
         return out

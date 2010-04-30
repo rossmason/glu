@@ -29,10 +29,12 @@ The stored representation of a resource looks like this:
 import os
 
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu   import Settings
+
 from glu.platform_specifics import STORAGE_OBJECT
 
-from glu.exceptions       import *
+from org.mulesource.glu.exceptions import *
+
 from glu.logger           import *
 from glu.core.parameter   import TYPE_COMPATIBILITY
 from glu.core.util        import Url
@@ -46,7 +48,7 @@ def getResourceUri(resource_name):
     @rtype:   string
     
     """
-    return settings.PREFIX_RESOURCE + "/" + resource_name
+    return Settings.getSettingsObject().PREFIX_RESOURCE + "/" + resource_name
 
 
 def retrieveResourceFromStorage(uri, only_public=False):
@@ -67,7 +69,7 @@ def retrieveResourceFromStorage(uri, only_public=False):
     
     """
     # Need to take the resource URI prefix off to get the resource_name.
-    resource_name = uri[len(settings.PREFIX_RESOURCE)+1:]
+    resource_name = uri[len(Settings.getSettingsObject().PREFIX_RESOURCE)+1:]
     obj = None
     try:
         obj = STORAGE_OBJECT.loadResourceFromStorage(resource_name)
@@ -100,7 +102,7 @@ def deleteResourceFromStorage(uri):
     @type  uri:   string
 
     """
-    resource_name = uri[len(settings.PREFIX_RESOURCE)+1:]
+    resource_name = uri[len(Settings.getSettingsObject().PREFIX_RESOURCE)+1:]
     STORAGE_OBJECT.deleteResourceFromStorage(resource_name)
 
 def listResources():
@@ -189,7 +191,7 @@ def paramSanityCheck(param_dict, param_def_dict, name_for_errors):
     #
     for pname, pdict in param_def_dict.items():
         if pdict['required']  and  (not param_dict  or  pname not in param_dict):
-            raise GluMandatoryParameterMissing("Missing mandatory parameter '%s' in section '%s'" % (pname, name_for_errors))
+            raise GluMandatoryParameterMissingException("Missing mandatory parameter '%s' in section '%s'" % (pname, name_for_errors))
 
 def fillDefaults(param_def_dict, param_dict):
     """
@@ -242,8 +244,8 @@ def convertTypes(param_def_dict, param_dict):
                     raise Exception("Cannot convert provided parameter type (%s) to necessary type(s) '%s'" % \
                                     (param_type, runtime_types))
             except Exception, e:
-                raise GluException("Incompatible type for parameter '%s' in section '%s': %s" % \
-                                   (pname, name_for_errors, str(e)))
+                raise GluException("Incompatible type for parameter '%s': %s" % \
+                                   (pname, str(e)))
 
 
 def makeResource(component_class, params):
@@ -319,7 +321,7 @@ def makeResource(component_class, params):
 
     # The parameters passed the sanity checks. We can now create the resource definition.
     suggested_name = provided_resource_creation_params['suggested_name']
-    resource_uri   = settings.PREFIX_RESOURCE + "/" + suggested_name
+    resource_uri   = Settings.getSettingsObject().PREFIX_RESOURCE + "/" + suggested_name
     resource_name  = suggested_name # TODO: Should check if the resource exists already...
     params['code_uri'] = component.getUri()  # Need a reference to the code that this applies to
     

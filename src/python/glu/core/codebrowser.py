@@ -6,10 +6,10 @@ Allows users and clients to browse the server's installed code.
 import glujson as json
 
 # Glu imports
-import glu.settings as settings
+from org.mulesource.glu   import Settings
+from org.mulesource.glu.exceptions import GluBadRequestException
 
-from glu.exceptions       import GluException
-from glu.components            import _CODE_MAP
+from glu.components       import _CODE_MAP
 from glu.resources        import makeResource 
 from glu.core.basebrowser import BaseBrowser
 from glu.core.util        import Url
@@ -27,7 +27,7 @@ def getComponentClass(uri):
     @rtype          A class derived from BaseComponent
     
     """
-    path_elems = uri[len(settings.PREFIX_CODE):].split("/")[1:]
+    path_elems = uri[len(Settings.getSettingsObject().PREFIX_CODE):].split("/")[1:]
     component_name  = path_elems[0]   # This should be the name of the code element
     
     # Instantiate the component
@@ -82,6 +82,7 @@ class CodeBrowser(BaseBrowser):
 
         """
         # It's the responsibility of the browser class to provide breadcrums
+        settings = Settings.getSettingsObject()
         self.breadcrums = [ ("Home", settings.DOCUMENT_ROOT), ("Code", settings.PREFIX_CODE) ]
 
         if self.request.getRequestPath() == settings.PREFIX_CODE:
@@ -144,7 +145,7 @@ class CodeBrowser(BaseBrowser):
         try:
             param_dict = json.loads(body)
         except Exception, e:
-            raise GluException("Malformed request body: " + str(e))
+            raise GluBadRequestException("Malformed request body: " + str(e))
         ret_msg = makeResource(component_class, param_dict)
         return ( 201, ret_msg )
     

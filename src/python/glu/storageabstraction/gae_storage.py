@@ -2,7 +2,9 @@
 Base class from which all storage abstractions derive.
 
 """
+pass
 
+'''
 import glujson as json
 
 # GAE imports
@@ -84,3 +86,4 @@ class GaeStorage(object):
         except Exception, e:
             return str(e)
 
+'''

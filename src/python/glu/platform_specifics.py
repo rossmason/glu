@@ -27,8 +27,11 @@ PLATFORM = PLATFORM_JYTHON
 # Export the correct storage object under the generic name 'STORAGE_OBJECT'
 #
 if PLATFORM == PLATFORM_GAE:
+    '''
     from glu.storageabstraction.gae_storage import GaeStorage
     STORAGE_OBJECT = GaeStorage()
+    '''
+    pass
 else:
     from glu.storageabstraction.file_storage import FileStorage
     STORAGE_OBJECT = FileStorage("resourceDB")
@@ -40,8 +43,14 @@ else:
 if PLATFORM == PLATFORM_JYTHON:
     from glu.httpabstraction.jython_java_server import JythonJavaHttpServer as HttpServer
 elif PLATFORM == PLATFORM_PYTHON:
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@ NOT SUPPORTED!!! @@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    '''
     from glu.httpabstraction.python_http_server import PythonHttpServer as HttpServer
+    '''
 else:
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@ NOT SUPPORTED!!! @@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    '''
     from glu.httpabstraction.gae_http_server import GaeHttpServer as HttpServer
+    '''
 
 

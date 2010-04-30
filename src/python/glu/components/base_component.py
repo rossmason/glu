@@ -7,7 +7,7 @@ import urllib, urllib2
 from copy import deepcopy
 
 #Glu imports
-import glu.settings as settings
+from org.mulesource.glu  import Settings
 
 from glu.core.util       import Url 
 from glu.core.parameter  import *
@@ -247,7 +247,7 @@ class BaseComponent(object):
         @rtype:  string
         
         """
-        return settings.PREFIX_CODE + "/" + self.getName()
+        return Settings.getSettingsObject().PREFIX_CODE + "/" + self.getName()
     
     def getParams(self):
         """

@@ -8,7 +8,7 @@ import os
 import glujson as json
 
 # Glu imports
-from glu.exceptions import *
+from org.mulesource.glu.exceptions import *
 
 class FileStorage(object):
     """
@@ -53,11 +53,11 @@ class FileStorage(object):
             os.remove(self.storage_location + "/" + resource_name)
         except OSError, e:
             if e.errno == 2:
-                raise GluResourceNotFound(resource_name)
+                raise GluResourceNotFoundException(resource_name)
             elif e.errno == 13:
-                raise GluPermissionDenied(resource_name)
+                raise GluPermissionDeniedException(resource_name)
             else:
-                raise GlException("Cannot delete resource '%s'" % resource_name)
+                raise GluException("Cannot delete resource '%s'" % resource_name)
         except Exception, e:
             raise GluException("Cannot delete resource '%s' (%s)" % (resource_name, str(e)))
 
