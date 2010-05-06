@@ -42,7 +42,7 @@ class BaseStorage(object):
         """
         pass
 
-    def writeResourceToStorage(resource_name, resource_def):
+    def writeResourceToStorage(self, resource_name, resource_def):
         """
         Store a resource definition.
         

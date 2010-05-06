@@ -7,14 +7,13 @@ from java.lang import String
 import time
 
 # Glu imports
-from org.mulesource.glu     import Settings
+from org.mulesource.glu      import Settings
 
-from glu.core               import RequestDispatcher
-from glu.platform_specifics import *
-#from java.lang import Exception
+from glu.core                import RequestDispatcher
+from glu.platform_specifics  import *
 
-if __name__ == '__main__':
-    
+
+if __name__ == '__main__':    
     settings  = Settings.getSettingsObject()
     my_server = HttpServer(settings.LISTEN_PORT, RequestDispatcher())
 
