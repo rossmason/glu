@@ -81,7 +81,14 @@ class FileStorage(object):
         try:
             os.remove(self.__make_filename(file_name))
         except OSError, e:
-            raise GluFileNotFound("File '%s' could not be found'" % (file_name))
+            if e.errno == 2:
+                raise GluFileNotFound(file_name)
+            elif e.errno == 13:
+                raise GluPermissionDenied(file_name)
+            else:
+                raise GlException("Cannot delete file '%s (%s)'" % (resource_name, str(e)))
+        except Exception, e:
+            raise GluException("Cannot delete file '%s' (%s)" % (resource_name, str(e)))
 
     def listFiles(self):
         """
@@ -130,17 +137,7 @@ class FileStorage(object):
         @type resource_name:     string
 
         """
-        try:
-            self.deleteFile(resource_name)
-        except GluFileNotFound, e:
-            if e.errno == 2:
-                raise GluResourceNotFound(resource_name)
-            elif e.errno == 13:
-                raise GluPermissionDenied(resource_name)
-            else:
-                raise GlException("Cannot delete resource '%s'" % resource_name)
-        except Exception, e:
-            raise GluException("Cannot delete resource '%s' (%s)" % (resource_name, str(e)))
+        self.deleteFile(resource_name)
 
     def listResourcesInStorage(self):
         """

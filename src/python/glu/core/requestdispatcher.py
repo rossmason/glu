@@ -67,7 +67,7 @@ class RequestDispatcher(object):
             (code, data) = e.code, e.msg
         except GluMandatoryParameterMissing, e:
             (code, data) = e.code, e.msg
-        except GluResourceNotFound, e:
+        except GluFileNotFound, e:
             (code, data) = e.code, e.msg
         except GluException, e:
             (code, data) = ( 400, "Bad request: " + e.msg)

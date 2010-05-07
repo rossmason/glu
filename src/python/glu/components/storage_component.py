@@ -55,10 +55,10 @@ class StorageComponent(BaseComponent):
         
         """
         # Access to our storage bucket
-        storage          = self.getFileStorage()
+        storage   = self.getFileStorage()
 
         # Get my parameters
-        data_name   = params.get('name')
+        data_name = params.get('name')
         if not data_name:
             # User didn't specify a specific file, which means we should generate
             # a list of all the files in that namespace.
@@ -70,11 +70,15 @@ class StorageComponent(BaseComponent):
             new_data = [ "%s/%s/%s" % (my_resource_uri, "files", name) for name in data ]
             data = new_data
         else:
-            if input:
-                storage.storeFile(data_name, input)
-                data = "Successfully stored"
+            if request.getRequestMethod() == "DELETE":
+                storage.deleteFile(data_name)
+                data = "File deleted"
             else:
-                data = storage.loadFile(data_name)
+                if input:
+                    storage.storeFile(data_name, input)
+                    data = "Successfully stored"
+                else:
+                    data = storage.loadFile(data_name)
 
         return 200, data
 
