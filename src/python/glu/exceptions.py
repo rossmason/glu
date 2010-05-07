@@ -10,6 +10,7 @@ class GluException(Exception):
     """
     def __init__(self, msg=None, *args, **kwargs):
         super(GluException, self).__init__(*args, **kwargs)
+        self.code = 500
         if msg:
             self.msg = msg
 
@@ -24,6 +25,10 @@ class GluMandatoryParameterMissing(GluException):
 class GluResourceNotFound(GluException):
     code = 404
     msg  = "Resource not found"
+    
+class GluFileNotFound(GluException):
+    code = 404
+    msg  = "File not found"
     
 class GluPermissionDenied(GluException):
     code = 403

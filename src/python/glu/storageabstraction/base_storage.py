@@ -8,6 +8,52 @@ class BaseStorage(object):
     Abstract implementation of the base storage methods.
 
     """
+    def loadFile(self, file_name):
+        """
+        Load the specified file from storage.
+
+        @param file_name:    Name of the selected file.
+        @type file_name:     string
+
+        @return              Buffer containing the file contents.
+        @rtype               string
+
+        """
+        pass
+
+    def storeFile(self, file_name, data):
+        """
+        Store the specified file in storage.
+
+        @param file_name:    Name of the file.
+        @type file_name:     string
+
+        @param data:         Buffer containing the file contents.
+        @type data:          string
+
+        """
+        pass
+
+    def deleteFile(self, file_name):
+        """
+        Delete the specified file from storage.
+
+        @param file_name:    Name of the selected file.
+        @type file_name:     string
+
+        """
+        pass
+
+    def listFiles(self):
+        """
+        Return list of all files in the storage.
+
+        @return:                 List of file names.
+        @rtype:                  list
+
+        """
+        pass
+
     def loadResourceFromStorage(self, resource_name):
         """
         Load the specified resource from storage.

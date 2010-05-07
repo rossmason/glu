@@ -67,7 +67,7 @@ class CombinerComponent(BaseComponent):
         #
         # Example of (3): Using an already existing resource definition.
         #
-        code, data = runResource("MyGoogleSearch", "search", params = { "query" : "mule+esb" })
+        code, data = runResource("MyGoogleSearch/search", params = { "query" : "mule+esb" })
         if code == 200:
             data = "Received the following data: " + str(data)
         else:

@@ -41,7 +41,7 @@ from glu.core.util        import Url
 def getResourceUri(resource_name):
     """
     Construct a resource's URI based on its name.
-    
+
     @return:  URI of the named resource.
     @rtype:   string
     
@@ -210,7 +210,8 @@ def fillDefaults(param_def_dict, param_dict):
     """
     for pname, pdict in param_def_dict.items():
         if not pdict['required']  and  pname not in param_dict:
-            param_dict[pname] = pdict['default']
+            if pdict['default'] is not None:
+                param_dict[pname] = pdict['default']
 
 def convertTypes(param_def_dict, param_dict):
     """
@@ -242,8 +243,7 @@ def convertTypes(param_def_dict, param_dict):
                     raise Exception("Cannot convert provided parameter type (%s) to necessary type(s) '%s'" % \
                                     (param_type, runtime_types))
             except Exception, e:
-                raise GluException("Incompatible type for parameter '%s' in section '%s': %s" % \
-                                   (pname, name_for_errors, str(e)))
+                raise GluException("Incompatible type for parameter '%s': %s" % (pname, str(e)))
 
 
 def makeResource(component_class, params):
@@ -263,7 +263,8 @@ def makeResource(component_class, params):
                 "params" : {
                         "user"     : "BrendelConsult",
                         "password" : "some password"
-                }
+                },
+                "positional_params" : [ "user" ]      # Optional
             }
 
     The method performs sanity checking on the supplied
@@ -304,7 +305,7 @@ def makeResource(component_class, params):
     #
     # Check whether there are unknown parameters in the 'param' or 'resource_creation_params' section.
     #
-    provided_params                   = params.get('params')
+    provided_params = params.get('params')
     if not provided_params:
         # If no parameters were provided at all, we create them as
         # an empty dictionary. We need something here to be able
@@ -327,7 +328,7 @@ def makeResource(component_class, params):
     # we need to add their default values.
     fillDefaults(component_params_def['params'], provided_params)
     fillDefaults(component_params_def['resource_creation_params'], provided_resource_creation_params)
-    
+
     # Storage for a resource contains a private and public part. The public part is what
     # any user of the resource can see: URI, name and description. In the private part we
     # store whatever was provided here during resource creation. It contains the information

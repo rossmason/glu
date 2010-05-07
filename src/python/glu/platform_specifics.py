@@ -18,7 +18,7 @@ PLATFORM_GAE    = "GAE"
 # !!! EDIT THIS:
 # ------------------------------------------------------------------------------------------
 #
-PLATFORM = PLATFORM_JYTHON
+PLATFORM = PLATFORM_PYTHON
 
 
 

@@ -104,4 +104,20 @@ send_test({
           },
           code_url=SERVER_URL + "/code/GpsWalkerComponent")
 
+# Create the Storage component
+send_test({
+            'resource_creation_params' : {
+                'suggested_name' : 'MyStorageResource'
+            },
+          },
+          code_url=SERVER_URL + "/code/StorageComponent")
+
+# Create another Storage component
+send_test({
+            'resource_creation_params' : {
+                'suggested_name' : 'MySecondStorageResource'
+            },
+          },
+          code_url=SERVER_URL + "/code/StorageComponent")
+
 print "\nDone..."

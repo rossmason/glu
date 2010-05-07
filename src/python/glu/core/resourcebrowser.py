@@ -101,12 +101,13 @@ class ResourceBrowser(BaseBrowser):
                 # This service has some possible runtime parameters defined.
                 runtime_param_dict = self.request.getRequestQueryDict()
 
-                service_name = path_elems[1]
-                input        = self.request.getRequestBody()
+                service_name      = path_elems[1]
+                positional_params = path_elems[2:]
+                input             = self.request.getRequestBody()
                 try:
                     code, data = _accessComponentService(component, services, complete_resource_def,
-                                                    resource_name, service_name, runtime_param_dict,
-                                                    input, self.request)
+                                                         resource_name, service_name, positional_params,
+                                                         runtime_param_dict, input, self.request)
                 except GluException, e:
                     code = e.code
                     data = e.msg
@@ -116,6 +117,7 @@ class ResourceBrowser(BaseBrowser):
                     print traceback.format_exc()
                     log("Exception in component for service '%s': %s" % (service_name, str(e)), facility=LOGF_COMPONENTS)
                     code, data = (500, "Internal server error. Details have been logged...")
+
                 if code != 404  and  method == "GET"  and  service_name in services:
                     self.breadcrums.append((service_name, services[service_name]['uri']))
 
