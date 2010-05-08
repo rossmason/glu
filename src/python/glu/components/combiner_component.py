@@ -53,7 +53,7 @@ class CombinerComponent(BaseComponent):
         #   2. Instantiate the component and provide all the necessary
         #      arguments yourself.
         #
-        #   3. Use the runResource() method to utilizse an already
+        #   3. Use the accessResource() method to utilizse an already
         #      existing resource definition. This is nice, because
         #      you only need to provide the run-time parameters, if any.
         #
@@ -67,7 +67,7 @@ class CombinerComponent(BaseComponent):
         #
         # Example of (3): Using an already existing resource definition.
         #
-        code, data = runResource("MyGoogleSearch/search", params = { "query" : "mule+esb" })
+        code, data = accessResource("/resource/MyGoogleSearch/search", params = { "query" : "mule+esb" })
         if code == 200:
             data = "Received the following data: " + str(data)
         else:

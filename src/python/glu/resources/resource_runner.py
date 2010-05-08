@@ -1,6 +1,8 @@
 
 import glujson as json
 
+import glu.settings as settings
+
 import glu.core.codebrowser  # Wanted to be much more selective here, but a circular
                              # import issue was most easily resolved like this.
                              # We only need getComponentInstance() from this module.
@@ -78,7 +80,7 @@ def _accessComponentService(component, services, complete_resource_def, resource
         #
         # Why did we not check for those parameters earlier when the
         # runtime_param_dict parameter was created before this function
-        # was called? Because we may have been called out of the runResource()
+        # was called? Because we may have been called out of the accessResource()
         # method, which could possibly use a complete 
         #
         if positional_params:
@@ -190,11 +192,12 @@ def _getResourceDetails(resource_name):
                 component             = component)
 
      
-def runResource(resource_uri, input=None, params=None):
+def accessResource(resource_uri, input=None, params=None):
     """
-    Run a resource identified by its URI.
+    Access a resource identified by its URI.
     
-    @param resource_name:    The uri of the resource (only the part after the resource prefix.
+    @param resource_name:    The uri of the resource. We allow absolute URIs (well, later at least),
+                             and relative URIs (starting with "/resource/").
                              Contains resource name, service name and any positional parameters.
     @type resource_name:     string
     
@@ -208,6 +211,10 @@ def runResource(resource_uri, input=None, params=None):
     @type params:            dict
     
     """
+    if not resource_uri.startswith(settings.PREFIX_RESOURCE + "/"):
+        raise Exception("Malformed resource name. Needs to be absolute or start with '%s'" % settings.PREFIX_RESOURCE)
+    resource_uri = resource_uri[len(settings.PREFIX_RESOURCE)+1:]   # Strip the prefix off
+
     # Get the public representation of the resource
     path_components   = resource_uri.split("/")
     resource_name     = path_components[0]
