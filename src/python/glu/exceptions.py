@@ -21,6 +21,10 @@ class GluMethodNotAllowed(GluException):
     code = 405
     msg  = "Method not allowed"
     
+class GluBadRequest(GluException):
+    code = 400
+    msg  = "Bad request"
+    
 class GluMandatoryParameterMissing(GluException):
     code = 400
     msg  = "Mandatory parameter missing"
