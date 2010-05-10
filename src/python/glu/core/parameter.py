@@ -55,11 +55,19 @@ def __numstr_to_num(x):
     # Can't convert anything else
     return None
 
+def __bool_convert(x):
+    if type(x) is bool:
+        return x
+    else:
+        if x.lower() in [ "y", "yes", "true", "t", "1" ]:
+            return True
+        else:
+            return False
 
 TYPE_COMPATIBILITY = {
     PARAM_STRING   : ([ unicode, str ], [ str ], None),
     PARAM_PASSWORD : ([ unicode, str ], [ str ], None),
-    PARAM_BOOL     : ([ bool ], [ bool ], None),
+    PARAM_BOOL     : ([ bool ], [ bool ], __bool_convert),
     PARAM_DATE     : ([ unicode, str ], [ date ], lambda x : date(*[ int(elem) for elem in x.split("-")])),
     PARAM_TIME     : ([ unicode, str ], [ time_class ], lambda x : time_class(*[ int(elem) for elem in x.split(":")])),
     PARAM_NUMBER   : ([ int, float ], [ int, float ], __numstr_to_num),

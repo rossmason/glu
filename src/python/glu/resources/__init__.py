@@ -168,15 +168,16 @@ def paramSanityCheck(param_dict, param_def_dict, name_for_errors):
             if pname not in param_def_dict:
                 raise GluException("Unknown parameter in '%s' section: %s" % (name_for_errors, pname))
             # Sanity check the types
-            type_str   = param_def_dict[pname]['type']
-            param_type = type(param_dict[pname])
+            type_str    = param_def_dict[pname]['type']
+            param_value = param_dict[pname]
+            param_type  = type(param_value)
             storage_types, runtime_types, conversion_func = TYPE_COMPATIBILITY[type_str]
             if param_type in runtime_types:
                 pass
             elif param_type not in storage_types:
                 try:
                     if conversion_func:
-                        conversion_func(param_type)
+                        conversion_func(param_value)
                     else:
                         raise Exception("Cannot convert provided parameter type (%s) to necessary type(s) '%s'" % \
                                         (param_type, runtime_types))
