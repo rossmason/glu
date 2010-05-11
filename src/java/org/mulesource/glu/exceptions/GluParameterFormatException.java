@@ -31,7 +31,6 @@ public class GluParameterFormatException extends GluException
     public GluParameterFormatException(String msg)
     {
         super(msg);
-        // TODO Auto-generated constructor stub
     }
     
     public GluParameterFormatException(Throwable ex)
@@ -42,7 +41,6 @@ public class GluParameterFormatException extends GluException
     public GluParameterFormatException(String msg, Throwable ex)
     {
         super(msg, ex);
-        // TODO Auto-generated constructor stub
     }
     
     public int getCode()

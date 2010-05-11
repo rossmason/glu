@@ -31,7 +31,6 @@ public class GluResourceNotFoundException extends GluException
     public GluResourceNotFoundException(String msg)
     {
         super(msg);
-        // TODO Auto-generated constructor stub
     }
     
     public GluResourceNotFoundException(Throwable ex)
@@ -42,7 +41,6 @@ public class GluResourceNotFoundException extends GluException
     public GluResourceNotFoundException(String msg, Throwable ex)
     {
         super(msg, ex);
-        // TODO Auto-generated constructor stub
     }
     
     public int getCode()

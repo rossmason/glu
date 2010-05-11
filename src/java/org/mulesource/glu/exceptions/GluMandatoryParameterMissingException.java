@@ -31,7 +31,6 @@ public class GluMandatoryParameterMissingException extends GluException
     public GluMandatoryParameterMissingException(String msg)
     {
         super(msg);
-        // TODO Auto-generated constructor stub
     }
     
     public GluMandatoryParameterMissingException(Throwable ex)
@@ -42,7 +41,6 @@ public class GluMandatoryParameterMissingException extends GluException
     public GluMandatoryParameterMissingException(String msg, Throwable ex)
     {
         super(msg, ex);
-        // TODO Auto-generated constructor stub
     }
     
     public int getCode()

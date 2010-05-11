@@ -29,7 +29,6 @@ public class GluException extends Exception
     public GluException(String msg)
     {
         super(msg);
-        // TODO Auto-generated constructor stub
     }
     
     public GluException(Throwable ex)
@@ -40,7 +39,6 @@ public class GluException extends Exception
     public GluException(String msg, Throwable ex)
     {
         super(msg, ex);
-        // TODO Auto-generated constructor stub
     }
     
     public int getCode()

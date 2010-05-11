@@ -12,33 +12,33 @@ package org.mulesource.glu.exceptions;
 
 import org.mulesource.glu.exceptions.GluException;
 
-public class GluBadRequestException extends GluException
+public class GluFileNotFoundException extends GluException
 {
     /*
      * The default message and code is what makes this class unique.
      */
-    private final static String DEFAULT_MSG = "Bad request";
-    private final static int    CODE        = 400;
+    private final static String DEFAULT_MSG = "File not found";
+    private final static int    CODE        = 404;
     
     /*
      * The usual set of constructors for exceptions
      */
-    public GluBadRequestException()
+    public GluResourceNotFoundException()
     {
         super(DEFAULT_MSG);
     }
 
-    public GluBadRequestException(String msg)
+    public GluResourceNotFoundException(String msg)
     {
         super(msg);
     }
     
-    public GluBadRequestException(Throwable ex)
+    public GluResourceNotFoundException(Throwable ex)
     {
         super(DEFAULT_MSG, ex);
     }
 
-    public GluBadRequestException(String msg, Throwable ex)
+    public GluResourceNotFoundException(String msg, Throwable ex)
     {
         super(msg, ex);
     }

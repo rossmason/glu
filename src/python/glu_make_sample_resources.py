@@ -104,4 +104,36 @@ send_test({
           },
           code_url=SERVER_URL + "/code/GpsWalkerComponent")
 
+# Create the Storage component
+send_test({
+            'resource_creation_params' : {
+                'suggested_name' : 'MyStorageResource'
+            },
+          },
+          code_url=SERVER_URL + "/code/StorageComponent")
+
+# Create another Storage component
+send_test({
+            'resource_creation_params' : {
+                'suggested_name' : 'MySecondStorageResource'
+            },
+          },
+          code_url=SERVER_URL + "/code/StorageComponent")
+
+# Create a Salesforce component
+send_test({
+            'params' : {
+                'username'       : 'development@mulesource.com.support',
+                'password'       : 'mul3d3v201510',
+                'security_token' : '9UUFx84vYkL1GcUPGOPQG0IfB',
+                'API_URI'        : 'https://test.salesforce.com/services/Soap/u/16.0'
+            },
+            'resource_creation_params' : {
+                'suggested_name' : 'MySalesforceResource'
+            },
+          },
+          code_url=SERVER_URL + "/code/SalesforceComponent")
+
+send_test("blah blah", "http://localhost:8001/resource/MySalesforceResource/query/contact")
+
 print "\nDone..."

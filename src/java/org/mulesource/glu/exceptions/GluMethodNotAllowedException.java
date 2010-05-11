@@ -31,7 +31,6 @@ public class GluMethodNotAllowedException extends GluException
     public GluMethodNotAllowedException(String msg)
     {
         super(msg);
-        // TODO Auto-generated constructor stub
     }
     
     public GluMethodNotAllowedException(Throwable ex)
@@ -42,7 +41,6 @@ public class GluMethodNotAllowedException extends GluException
     public GluMethodNotAllowedException(String msg, Throwable ex)
     {
         super(msg, ex);
-        // TODO Auto-generated constructor stub
     }
     
     public int getCode()

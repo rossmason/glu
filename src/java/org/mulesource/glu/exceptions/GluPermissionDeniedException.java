@@ -31,7 +31,6 @@ public class GluPermissionDeniedException extends GluException
     public GluPermissionDeniedException(String msg)
     {
         super(msg);
-        // TODO Auto-generated constructor stub
     }
     
     public GluPermissionDeniedException(Throwable ex)
@@ -42,7 +41,6 @@ public class GluPermissionDeniedException extends GluException
     public GluPermissionDeniedException(String msg, Throwable ex)
     {
         super(msg, ex);
-        // TODO Auto-generated constructor stub
     }
     
     public int getCode()
