@@ -11,6 +11,46 @@ import beatbox
 from glu.components.api import *
 from glu.exceptions import *
 
+#
+# All the services have the same parameters. We only need to define them once.
+#
+_all_tables_params =  {
+                            "spec"                : ParameterDef(PARAM_STRING,
+                                                                 "Spec for query. Specify 'fields' to see all available fields and 'data' to see contents.",
+                                                                 required=True),
+
+                            "filter_fieldname_1"  : ParameterDef(PARAM_STRING,
+                                                                 "Field name for filtering. Append __lt, __lte, __gt, __gte, __ne or __like to further " \
+                                                                 "specify the filtering in an SQL like manner.",
+                                                                 required=False, default=""),
+                            "filter_value_1"      : ParameterDef(PARAM_STRING, "Field value for filtering", required=False, default=""),
+
+                            "filter_fieldname_2"  : ParameterDef(PARAM_STRING,
+                                                                 "Field name for filtering. Append __lt, __lte, __gt, __gte, __ne or __like to further " \
+                                                                 "specify the filtering in an SQL like manner.",
+                                                                 required=False, default=""),
+                            "filter_value_2"      : ParameterDef(PARAM_STRING, "Field value for filtering", required=False, default=""),
+
+                             "filter_fieldname_3" : ParameterDef(PARAM_STRING,
+                                                                 "Field name for filtering. Append __lt, __lte, __gt, __gte, __ne or __like to further " \
+                                                                 "specify the filtering in an SQL like manner.",
+                                                                 required=False, default=""),
+                            "filter_value_3"      : ParameterDef(PARAM_STRING, "Field value for filtering", required=False, default=""),
+
+                             "view"               : ParameterDef(PARAM_STRING,
+                                                                 "If 'data' was requested, this determines how much data is returned: 'compact' for only " \
+                                                                 "the most essential fields, 'normal' for the default contact fields, 'all' for all fields, " \
+                                                                 "including custom fields.",
+                                                                 required=False, default="compact"),
+                      }
+
+_all_positional_params =  [ "spec",
+                            "filter_fieldname_1", "filter_value_1",
+                            "filter_fieldname_2", "filter_value_2",
+                            "filter_fieldname_3", "filter_value_3",
+                          ]
+
+
 class SalesforceComponent(BaseComponent):
     NAME             = "SalesforceComponent"
     PARAM_DEFINITION = {
@@ -22,31 +62,175 @@ class SalesforceComponent(BaseComponent):
                        }
     
     DESCRIPTION      = "Provides an interface to Salesforce."
-    DOCUMENTATION    =  """
-                        This component implements a number of sub-resources,
-                        which can be used to access information about the specified
-                        Salesforce account.
-                        """
-    SERVICES         = {
-                           "fields" : {
-                               "desc"   : "Return a list of field names for the specified object type (table)",
-                               "params" : {
-                                    "type" : ParameterDef(PARAM_STRING, "The object type (table name)", required=True),
-                               },
-                               "positional_params" : [ "type" ]
-                           },
-                           "query" : {
-                               "desc"   : "POST a query string to the specified name and later GET the results",
-                               "params" : {
-                                    "name"             : ParameterDef(PARAM_STRING, "Name for the query", required=True),
-                                    "filter_fieldname" : ParameterDef(PARAM_STRING, "Field name for filtering", required=False, default=""),
-                                    "filter_value"     : ParameterDef(PARAM_STRING, "Field value for filtering", required=False, default=""),
+    DOCUMENTATION    = """
+                       This component implements a number of sub-resources,
+                       which can be used to access information about the specified
+                       Salesforce account.
 
-                               },
-                               "positional_params" : [ "name", "filter_fieldname", "filter_value" ]
-                           }
+                       To filter your results, you can specify up to 3 pairs of field/value
+                       on the URL command line when you access data.
+                       """
+
+    SERVICES         = {
+                            "contact" : {
+                                "desc"              : "Return or update information about contacts",
+                                "params"            : _all_tables_params,
+                                "positional_params" : _all_positional_params
+                            },
+                            "lead" : {
+                                "desc"              : "Return or update information about leads",
+                                "params"            : _all_tables_params,
+                                "positional_params" : _all_positional_params
+                            },
+                            "opportunity" : {
+                                "desc"              : "Return or update information about opportunities",
+                                "params"            : _all_tables_params,
+                                "positional_params" : _all_positional_params
+                            },
                         }
-    
+
+    #
+    # Fields for the contact table
+    #
+    __contact_fields_compact = [
+        "Id", 
+        "CreatedDate", 
+        "Name", 
+        "FirstName", 
+        "LastName", 
+        "Email", 
+        "Phone", 
+        "MailingStreet", 
+        "MailingCity", 
+        "MailingState", 
+        "MailingPostalCode", 
+        "MailingCountry" 
+    ]
+
+    __contact_fields_normal = [
+        "AccountId", 
+        "Title", 
+        "Salutation", 
+        "Department", 
+        "Fax", 
+        "IsDeleted", 
+        "OtherPhone", 
+        "OtherStreet", 
+        "OtherCity", 
+        "OtherState", 
+        "OtherPostalCode", 
+        "OtherCountry", 
+        "MobilePhone", 
+        "LastCUUpdateDate", 
+        "LastModifiedById", 
+        "EmailBouncedReason", 
+        "OwnerId", 
+        "SystemModstamp", 
+        "MasterRecordId", 
+        "AssistantPhone", 
+        "LastModifiedDate", 
+        "AssistantName", 
+        "HasOptedOutOfEmail", 
+        "LastCURequestDate", 
+        "EmailBouncedDate", 
+        "Birthdate", 
+        "DoNotCall", 
+        "ReportsToId", 
+        "Description", 
+        "CreatedById", 
+        "LeadSource", 
+        "LastActivityDate", 
+        "HomePhone", 
+    ]
+
+    #
+    # Fields for the lead table
+    #
+    __lead_fields_compact = [
+        "Id",
+        "CreatedDate",
+        "Name",
+        "FirstName",
+        "LastName",
+        "Email",
+        "Phone",
+        "Street",
+        "City",
+        "State",
+        "PostalCode",
+        "Country",
+        "Company",
+        "Description",
+        "Status"
+    ]
+    __lead_fields_normal  = [
+        "AnnualRevenue",
+        "Title",
+        "Fax",
+        "IsDeleted",
+        "Industry",
+        "ConvertedContactId",
+        "Rating",
+        "MobilePhone",
+        "ConvertedOpportunityId",
+        "LastModifiedById",
+        "IsUnreadByOwner",
+        "OwnerId",
+        "ConvertedDate",
+        "SystemModstamp",
+        "MasterRecordId",
+        "ConvertedAccountId",
+        "LastModifiedDate",
+        "HasOptedOutOfEmail",
+        "IsConverted",
+        "EmailBouncedDate",
+        "EmailBouncedReason",
+        "NumberOfEmployees",
+        "CreatedById",
+        "LeadSource",
+        "LastActivityDate",
+        "Salutation",
+        "Website"
+    ]
+
+    #
+    # Fields for the opportunity table
+    #
+    __opportunity_fields_compact = [
+        "Id",
+        "CreatedDate",
+        "Name",
+        "IsWon",
+        "IsClosed",
+        "Amount",
+        "Probability",
+        "ExpectedRevenue",
+    ]
+
+    __opportunity_fields_normal = [
+        "FiscalQuarter",
+        "LastModifiedById",
+        "CloseDate",
+        "OwnerId",
+        "Type",
+        "Description",
+        "StageName",
+        "LastModifiedDate",
+        "ForecastCategoryName",
+        "CreatedById",
+        "IsDeleted",
+        "AccountId",
+        "FiscalYear",
+        "Fiscal",
+        "LeadSource",
+        "Pricebook2Id",
+        "LastActivityDate",
+        "HasOpportunityLineItem",
+        "NextStep",
+        "SystemModstamp",
+        "ForecastCategory",
+    ]
+
     def __connect(self, params):
         """
         Connect to Salesforce, returning a Python client object.
@@ -74,7 +258,8 @@ class SalesforceComponent(BaseComponent):
         works for now.
 
         """
-        return json.loads(json.dumps(res))
+        encoded = json.dumps(res)
+        return json.loads(encoded)
 
     def __return_where_clause(self, field, value):
         """
@@ -110,7 +295,8 @@ class SalesforceComponent(BaseComponent):
                 "gt"   : ">",
                 "gte"  : ">=",
                 "lt"   : "<",
-                "lte"  : "<="
+                "lte"  : "<=",
+                "ne"   : "<>"
             }
             op = op_translate.get(op_str)
             if not op:
@@ -118,59 +304,126 @@ class SalesforceComponent(BaseComponent):
         return "%s %s %s" % (field, op, value)
 
 
-    def query(self, request, input, params):
+    def __adding_where_clause(self, params):
         """
-        Return query results for a query.
-        
-        @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
-        
-        @param input:      Any data that came in the body of the request.
-        @type input:       string
-        
-        @param params:     Dictionary of parameter values.
-        @type params:      dict
-        
-        @return:           The output data of this service.
-        @rtype:            string
-        
+        Check for any filter parameters on the URL command line and
+        create a WHERE clause if appropriate, which is returned as
+        a string.
+
         """
-        # Access to our storage bucket
-        storage = self.getFileStorage()
+        #
+        # Any filtering on particular fields specified?
+        # If so, we add this to a 'WHERE' clause in the query.
+        #
+        filters = [ ( params['filter_fieldname_%d' % id], params['filter_value_%d' % id] ) for id in [ 1, 2, 3 ] ]
 
-        query_name = params['name']
+        filter_expressions = list()
+        for fieldname, value in filters:
+            if fieldname  and  value:
+                if type(value) is str:
+                    value = "'%s'" % value
+                filter_expressions.append(self.__return_where_clause(fieldname, value))
 
-        if request.getRequestMethod() == "DELETE":
-            storage.deleteFile(query_name)
-            data = "Query '%s' deleted" % query_name
+        if filter_expressions:
+            where_clause = " WHERE %s" % " and ".join(filter_expressions)
         else:
-            if input:
-                storage.storeFile(query_name, input)
-                data = "Query '%s' successfully stored" % query_name
-            else:
-                try:
-                    query_string = storage.loadFile(query_name).strip()
-                    # If this was stored as JSON then there might be quotes around the query string
-                    if query_string.startswith('"')  and  query_string.endswith('"'):
-                        query_string = query_string[1:-1]
+            where_clause = ""
 
-                    # See if there are filter parameters. If so, we add those to the query
-                    # string, but only if the query string does not hold a WHERE clause already.
-                    filter_field = params['filter_fieldname']
-                    filter_value = params['filter_value']
-                    if filter_field  and  filter_value  and 'where' not in query_string.lower():
-                        query_string += " WHERE %s" % self.__return_where_clause(filter_field, filter_value)
-                    svc  = self.__connect(params)
-                    data = self.__convert_salesforce_results_to_dict(svc.query(query_string))
-                except GluFileNotFound, e:
-                    raise GluResourceNotFound("Query '%s' could not be found" % query_name)
+        return where_clause
+        
+    def __get_all_field_names(self, svc, table_name):
+        """
+        Return list of all field names for the given table.
+
+        """
+        dlist = svc.describeSObjects([ table_name ])
+        all_fields = dlist[0].fields.keys()
+        return all_fields
+
+    def __make_select_statement_for_view(self, view, table_name, compact_fields, normal_fields, svc):
+        """
+        Return the select statement string for the givenview and table.
+
+        """
+        if view == "compact":
+            # Run normal query, only returning a compact view
+            query_string = "select %s from %s" % (", ".join(compact_fields), table_name)
+        elif view == "normal":
+            # Run normal query, returning all the default fields
+            query_string = "select %s from %s" % (", ".join(compact_fields + normal_fields), table_name)
+        elif view == "all":
+            # Run a query, which returns data for all fields, even custom ones.
+            # Therefore, we start by querying which fields are defined for contact
+            # and then subsequently we issue the query for all those fields.
+            all_fields   = self.__get_all_field_names(svc, table_name)
+            query_string = "select %s from %s" % (", ".join(all_fields), table_name)
+        else:
+            raise GluBadRequest("Unknown view: " + view)
+
+        return query_string
+
+
+    def __salesforce_table(self, request, input, params, table_name, compact_fields, normal_fields):
+        """
+        A generic helper method for access to salesforce tables.
+
+        This method implements a number of facilities that are common to all
+        the various tables we want to expose through this resource. Therefore,
+        after prepping the 'compact_fields' and 'other_fields' table, the actual
+        service methods can just call this helper method here.
+
+        Implements the 'fields' and 'data' specs, handles filter
+        parameters and views for data.
+
+        Besides the usual parameters that are passed to service methods, this
+        one also takes 'compact_fields' and 'other_fields' to specify, which
+        fields are to be shown depending on the selected view.
+
+        The 'table_name' specifies the table on which we operate.
+
+        """
+        svc  = self.__connect(params)
+
+        # The spec determines what we are doing with this table.
+        # Either we just want to see the field names or the actual
+        # data behind it.
+        spec = params['spec']
+        if spec == 'fields':
+            #
+            # Just need to return the list of fields that are defined in contact
+            #
+            data = self.__get_all_field_names(svc, table_name)
+
+        elif spec == "data":
+            #
+            # Want to see some actual data
+            #
+            # An optional 'view' parameter may have been specified, which tells us
+            # what fields to request in our queries.
+            #
+            view         = params['view'].lower()
+            query_string = self.__make_select_statement_for_view(view, table_name, compact_fields, normal_fields, svc)
+                
+            #
+            # Any filtering on particular fields specified?
+            # If so, we add this to a 'WHERE' clause in the query.
+            #
+            query_string += self.__adding_where_clause(params)
+
+            #
+            # Finally we can run the actual query
+            #
+            data = self.__convert_salesforce_results_to_dict(svc.query(query_string))
+
+        else:
+            raise GluBadRequest("Unknown query spec: " + spec)
 
         return 200, data
+ 
 
-
-    def fields(self, request, input, params):
+    def contact(self, request, input, params):
         """
-        Return the field names for a given object type.
+        Handle information about our contacts.
         
         @param request:    Information about the HTTP request.
         @type request:     BaseHttpRequest
@@ -185,10 +438,50 @@ class SalesforceComponent(BaseComponent):
         @rtype:            string
         
         """
-        type_name = params['type']
+        code, data = self.__salesforce_table(request, input, params, "contact",
+                                             self.__contact_fields_compact, self.__contact_fields_normal) 
+        return code, data
 
-        svc   = self.__connect(params)
-        dlist = svc.describeSObjects([type_name])
+    def lead(self, request, input, params):
+        """
+        Handle information about our leads.
+        
+        @param request:    Information about the HTTP request.
+        @type request:     BaseHttpRequest
+        
+        @param input:      Any data that came in the body of the request.
+        @type input:       string
+        
+        @param params:     Dictionary of parameter values.
+        @type params:      dict
+        
+        @return:           The output data of this service.
+        @rtype:            string
+        
+        """
+        code, data = self.__salesforce_table(request, input, params, "lead",
+                                             self.__lead_fields_compact, self.__lead_fields_normal) 
+        return code, data
 
-        return 200, dlist[0].fields.keys()
+    def opportunity(self, request, input, params):
+        """
+        Handle information about our opportunities.
+        
+        @param request:    Information about the HTTP request.
+        @type request:     BaseHttpRequest
+        
+        @param input:      Any data that came in the body of the request.
+        @type input:       string
+        
+        @param params:     Dictionary of parameter values.
+        @type params:      dict
+        
+        @return:           The output data of this service.
+        @rtype:            string
+        
+        """
+        code, data = self.__salesforce_table(request, input, params, "opportunity",
+                                             self.__opportunity_fields_compact, self.__opportunity_fields_normal) 
+        return code, data
+
 
