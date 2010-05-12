@@ -17,11 +17,13 @@ from glu.components.combiner_component     import CombinerComponent
 from glu.components.gpswalker_component    import GpsWalkerComponent
 from glu.components.storage_component      import StorageComponent
 from glu.components.salesforce_component   import SalesforceComponent
+from glu.components.marakana_component     import MarakanaComponent
 
 #
 # The known components
 #
-_KNOWN_COMPONENTS = [ TwitterComponent, GsearchComponent, CombinerComponent, GpsWalkerComponent, StorageComponent, SalesforceComponent ]
+_KNOWN_COMPONENTS = [ TwitterComponent, GsearchComponent, CombinerComponent, GpsWalkerComponent, StorageComponent,
+                      SalesforceComponent, MarakanaComponent ]
 
 # -------------------------------------------------------------------------------------
 # Don't edit down here...
