@@ -258,7 +258,7 @@ class SalesforceComponent(BaseComponent):
         works for now.
 
         """
-        encoded = json.dumps(res)
+        encoded = json.gludumps(res)
         return json.loads(encoded)
 
     def __return_where_clause(self, field, value):

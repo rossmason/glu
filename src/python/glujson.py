@@ -16,7 +16,7 @@ class GluJsonEncoder(JSONEncoder):
             return str(obj)
         return JSONEncoder.default(self, obj)
 
-def dumps(obj):
+def gludumps(obj):
     """
     Encode an object to string, using our own JSON Encoder.
 
