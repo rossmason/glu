@@ -139,6 +139,9 @@ send_test({
 
 # Create a Marakana component
 send_test({
+            'params': {
+                'salesforce_resource' : "/resource/MySalesforceResource"
+            },
             'resource_creation_params' : {
                 'suggested_name' : 'MyMarakanaResource'
             },
@@ -163,7 +166,7 @@ buf = """
       <organization-ref id="283190">ACME Inc.</organization-ref>
       <title>Software Developer</title>
       <office-phone>415-647-7000</office-phone>
-      <email>adam.watson@acme.com</email>
+      <email>m.rist@enbw.com</email>
       <address>
         <street1>1071 Mississippi St</street1>
         <city>San Francisco</city>

@@ -15,6 +15,10 @@ from glu.components.api import *
 class MarakanaComponent(BaseComponent):
     NAME             = "MarakanaComponent"
     
+    PARAM_DEFINITION = {
+                           "salesforce_resource" : ParameterDef(PARAM_STRING, "URL of our salesforce resource", required=True)
+                       }
+
     DESCRIPTION      = "Allows the storage of new orders that are POSTed by Marakana."
     DOCUMENTATION    =  """
                         This component is used to store objects that are pushed to us by Marakana.
@@ -29,8 +33,11 @@ class MarakanaComponent(BaseComponent):
                                     "id" : ParameterDef(PARAM_STRING, "Order id", required=False, default=""),
                                },
                                "positional_params" : [ "id" ]
+                           },
+                           "matches" :   {
+                               "desc"   : "Calculates the matches between order data and salesforce data.",
                            }
-                       }
+                        }
 
     #
     # Template for the product order dictionary.
@@ -240,10 +247,12 @@ class MarakanaComponent(BaseComponent):
                     try:
                         if 'product-order' in d['spark-domain']:
                             is_product_order = True
+                            doc_name         = 'product-order'
                             self.__dict_struct_compare(d, self.__PRODUCT_ORDER_TEMPLATE)
                             order_id = d['spark-domain']['product-order']['__attributes']['id']
                         else:
                             is_product_order = False
+                            doc_name         = 'registration-order'
                             self.__dict_struct_compare(d, self.__REGISTRATION_ORDER_TEMPLATE)
                             order_id = d['spark-domain']['registration-order']['__attributes']['id']
                     except Exception, e:
@@ -265,10 +274,71 @@ class MarakanaComponent(BaseComponent):
                         code = 201
                         data = "Successfully stored: %s" % location_str
 
-                    storage.storeFile(order_id, json.dumps(d))
+                    # Store the data, but only the dictionary that contains the actual order info.
+                    # We store it in a dictionary that contains a single key and this data, since
+                    # that makes it look ... nice.
+                    storage.storeFile(order_id, json.dumps({ doc_name : d['spark-domain'][doc_name] }))
                 else:
                     # Just want to retrieve an existing order
                     data = json.loads(storage.loadFile(param_order_id))
 
         return code, data
+
+
+    def matches(self, request, input, params, method):
+        storage    = self.getFileStorage()
+        order_list = storage.listFiles()
+
+        salesforce_resource_uri = params['salesforce_resource']
+
+        match_count = 0
+        out         = dict()
+        for order_id in order_list:
+            order = json.loads(storage.loadFile(order_id))
+            #
+            # The ID and customer field are at the same location in both
+            # types of orders. There is only one element in the top-level
+            # dictionary, so we can say:
+            top_level_key = order.keys()[0]
+            d = order[top_level_key]
+            customer_email = d['customer']['email']
+            print "customer email: ", customer_email
+            print "salesforce URI: ", salesforce_resource_uri
+            code, matches = accessResource('%s/contact/data/email/"%s"' % (salesforce_resource_uri, customer_email))
+            if code != 200:
+                raise GluException("Error accessing Salesforce resource: " + str(matches))
+            print matches
+            if top_level_key == 'product-order':
+                prod_name = d['product-item']['product-ref']
+                prod_type = "product"
+            else:
+                prod_name = d['registration'][0]['course-event-ref']['course-ref']
+                prod_type = "registration"
+            keystr = "%s, %s (%s) of %s ordered training %s '%s' for $%s" % (d['customer']['last-name'], d['customer']['first-name'], \
+                                                                 d['customer']['email'], d['customer-organization-ref'], \
+                                                                 prod_type, prod_name, d['taxable-subtotal'])
+            if matches:
+                match_count += len(matches)
+                desc = dict()
+                mo = list()
+                for m in matches:
+                    td = dict()
+                    td[' Name']                = m['Name']
+                    td['Address 1: Street']    = m['MailingStreet']
+                    td['Address 2: City']      = m['MailingCity']
+                    td['Address 3: State']     = m['MailingState']
+                    td['Address 4: Country']   = m['MailingCountry']
+                    td['CLICK HERE TO UPDATE SALESFORCE'] = self.getMyResourceUri() + "/integrate/" + order_id + "/" + m['Id']
+                    mo.append(td)
+                    
+                order_data = { keystr : mo }
+            else:
+                order_data = { keystr : None }
+
+            out[order_id] = order_data
+
+
+        out['summary'] = "%d matches." % match_count
+        return 200, out
+
 

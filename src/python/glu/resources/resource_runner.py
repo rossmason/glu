@@ -229,6 +229,9 @@ def accessResource(resource_uri, input=None, params=None, method="GET"):
     positional_params = path_components[2:]
 
     rinfo = _getResourceDetails(resource_name)
+
+    if params is None:
+        params = dict()
     
     code, data = _accessComponentService(rinfo['component'], rinfo['public_resource_def']['services'],
                                          rinfo['complete_resource_def'], resource_name,
