@@ -270,7 +270,8 @@ class MarakanaComponent(BaseComponent):
                         data       = "Successfully updated: %s" % location_str
                     else:
                         # Creating a new order? We need to extract the order id.
-                        request.setResponseHeader("Location", location_str)
+                        if request:
+                            request.setResponseHeader("Location", location_str)
                         code = 201
                         data = "Successfully stored: %s" % location_str
 
