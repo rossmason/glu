@@ -37,7 +37,7 @@ class StorageComponent(BaseComponent):
                        }
     
             
-    def files(self, request, input, params):
+    def files(self, request, input, params, method):
         """
         Stored or retrieves data from the storage bucket.
         
@@ -49,6 +49,9 @@ class StorageComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+        
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string
@@ -70,7 +73,7 @@ class StorageComponent(BaseComponent):
             new_data = [ "%s/%s/%s" % (my_resource_uri, "files", name) for name in data ]
             data = new_data
         else:
-            if request.getRequestMethod() == "DELETE":
+            if method == "DELETE":
                 storage.deleteFile(data_name)
                 data = "File deleted"
             else:

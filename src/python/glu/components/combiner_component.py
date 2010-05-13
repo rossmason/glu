@@ -26,7 +26,7 @@ class CombinerComponent(BaseComponent):
                        }
     
             
-    def combine(self, request, input, params):
+    def combine(self, request, input, params, method):
         """
         Calls another component.
         
@@ -38,6 +38,9 @@ class CombinerComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string

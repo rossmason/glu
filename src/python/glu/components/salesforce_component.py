@@ -421,7 +421,7 @@ class SalesforceComponent(BaseComponent):
         return 200, data
  
 
-    def contact(self, request, input, params):
+    def contact(self, request, input, params, method):
         """
         Handle information about our contacts.
         
@@ -434,6 +434,9 @@ class SalesforceComponent(BaseComponent):
         @param params:     Dictionary of parameter values.
         @type params:      dict
         
+        @param method:     The HTTP request method.
+        @type method:      string
+        
         @return:           The output data of this service.
         @rtype:            string
         
@@ -442,7 +445,7 @@ class SalesforceComponent(BaseComponent):
                                              self.__contact_fields_compact, self.__contact_fields_normal) 
         return code, data
 
-    def lead(self, request, input, params):
+    def lead(self, request, input, params, method):
         """
         Handle information about our leads.
         
@@ -455,6 +458,9 @@ class SalesforceComponent(BaseComponent):
         @param params:     Dictionary of parameter values.
         @type params:      dict
         
+        @param method:     The HTTP request method.
+        @type method:      string
+        
         @return:           The output data of this service.
         @rtype:            string
         
@@ -463,7 +469,7 @@ class SalesforceComponent(BaseComponent):
                                              self.__lead_fields_compact, self.__lead_fields_normal) 
         return code, data
 
-    def opportunity(self, request, input, params):
+    def opportunity(self, request, input, params, method):
         """
         Handle information about our opportunities.
         
@@ -475,6 +481,9 @@ class SalesforceComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+        
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string

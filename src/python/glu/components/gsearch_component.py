@@ -36,7 +36,7 @@ class GsearchComponent(BaseComponent):
                        }
     
             
-    def search(self, request, input, params):
+    def search(self, request, input, params, method):
         """
         Perform a Google search.
         
@@ -48,6 +48,9 @@ class GsearchComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+        
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string

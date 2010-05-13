@@ -194,7 +194,7 @@ class MarakanaComponent(BaseComponent):
             if type(item) is dict:
                 self.__dict_struct_compare(is_dict[key], item)
 
-    def orders(self, request, input, params):
+    def orders(self, request, input, params, method):
         """
         Stored or retrieves data from the storage bucket for Marakana orders.
         
@@ -206,6 +206,9 @@ class MarakanaComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+        
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string
@@ -222,7 +225,7 @@ class MarakanaComponent(BaseComponent):
             # which means we should generate a list of all the orders we have stored.
             data = self.__get_order_list(storage)
         else:
-            if request.getRequestMethod() == "DELETE":
+            if method == "DELETE":
                 if param_order_id:
                     storage.deleteFile(param_order_id)
                     data = "File deleted"

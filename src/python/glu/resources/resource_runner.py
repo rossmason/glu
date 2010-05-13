@@ -12,7 +12,7 @@ from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
                            retrieveResourceFromStorage, getResourceUri
 
 def _accessComponentService(component, services, complete_resource_def, resource_name, service_name,
-                            positional_params, runtime_param_dict, input, request=None, direct_call=False):
+                            positional_params, runtime_param_dict, input, request="GET", method=None, direct_call=False):
     """
     Passes control to a service method exposed by a component.
     
@@ -45,6 +45,9 @@ def _accessComponentService(component, services, complete_resource_def, resource
     
     @param input:                 Any potential input (came in the request body)
     @type input:                  string
+
+    @param request:               HTTP request structure.
+    @type request:                BaseHttpRequest
     
     @param direct_call:           Set this if the function is called directly from another component
                                   or piece of code that's not part of Glu. In that case, it wraps
@@ -144,9 +147,10 @@ def _accessComponentService(component, services, complete_resource_def, resource
                 # from the resource definition.
                 params.update(runtime_param_dict)
             
-            code, data = service_method(request     = request,
-                                        input       = input,
-                                        params      = params)
+            code, data = service_method(request = request,
+                                        input   = input,
+                                        params  = params,
+                                        method  = method)
         else:
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:
@@ -192,7 +196,7 @@ def _getResourceDetails(resource_name):
                 component             = component)
 
      
-def accessResource(resource_uri, input=None, params=None):
+def accessResource(resource_uri, input=None, params=None, method="GET"):
     """
     Access a resource identified by its URI.
     
@@ -210,6 +214,9 @@ def accessResource(resource_uri, input=None, params=None):
     @param params:           Any run-time parameters for this service as key/value pairs.
     @type params:            dict
     
+    @param method:           The HTTP method to be used.
+    @type method:            string
+    
     """
     if not resource_uri.startswith(settings.PREFIX_RESOURCE + "/"):
         raise Exception("Malformed resource name. Needs to be absolute or start with '%s'" % settings.PREFIX_RESOURCE)
@@ -224,8 +231,8 @@ def accessResource(resource_uri, input=None, params=None):
     rinfo = _getResourceDetails(resource_name)
     
     code, data = _accessComponentService(rinfo['component'], rinfo['public_resource_def']['services'],
-                                    rinfo['complete_resource_def'], resource_name,
-                                    service_name, positional_params, params, input, None, True)
+                                         rinfo['complete_resource_def'], resource_name,
+                                         service_name, positional_params, params, input, None, method, True)
     return code, data
  
  

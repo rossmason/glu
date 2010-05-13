@@ -116,7 +116,7 @@ class ResourceBrowser(BaseBrowser):
                 try:
                     code, data = _accessComponentService(component, services, complete_resource_def,
                                                          resource_name, service_name, positional_params,
-                                                         runtime_param_dict, input, self.request)
+                                                         runtime_param_dict, input, self.request, self.request.getRequestMethod())
                 except GluException, e:
                     code = e.code
                     data = e.msg
