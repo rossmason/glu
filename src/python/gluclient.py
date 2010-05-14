@@ -1,6 +1,4 @@
 
-Blah
-
 import sys
 import json
 import types
