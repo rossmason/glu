@@ -86,9 +86,9 @@ class FileStorage(object):
             elif e.errno == 13:
                 raise GluPermissionDenied(file_name)
             else:
-                raise GlException("Cannot delete file '%s (%s)'" % (resource_name, str(e)))
+                raise GluException("Cannot delete file '%s (%s)'" % (file_name, str(e)))
         except Exception, e:
-            raise GluException("Cannot delete file '%s' (%s)" % (resource_name, str(e)))
+            raise GluException("Cannot delete file '%s' (%s)" % (file_name, str(e)))
 
     def listFiles(self):
         """
