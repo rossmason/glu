@@ -73,7 +73,7 @@ class TwitterComponent(BaseComponent):
         # Return the requested information, in this case the latest status
         return data
             
-    def status(self, request, input, params):
+    def status(self, request, input, params, method):
         """
         Gets or updates the twitter status for the specified account.
         
@@ -85,6 +85,9 @@ class TwitterComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+        
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string
@@ -99,7 +102,7 @@ class TwitterComponent(BaseComponent):
         else:
             return 200, self.__post_status(account, password, input)
 
-    def timeline(self, request, input, params):
+    def timeline(self, request, input, params, method):
         """
         Get the user's timeline.
         
@@ -111,6 +114,9 @@ class TwitterComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+        
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string

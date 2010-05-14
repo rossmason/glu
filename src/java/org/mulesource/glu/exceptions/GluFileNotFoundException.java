@@ -10,44 +10,36 @@
 
 package org.mulesource.glu.exceptions;
 
-import org.mulesource.glu.exceptions.GluException;
-
 public class GluFileNotFoundException extends GluException
 {
     /*
      * The default message and code is what makes this class unique.
      */
-    private final static String DEFAULT_MSG = "File not found";
-    private final static int    CODE        = 404;
+    private final static String DEFAULT_MSG  = "Mandatory parameter missing";
+    private final static int    DEFAULT_CODE = 404;
     
     /*
      * The usual set of constructors for exceptions
      */
-    public GluResourceNotFoundException()
+    public GluFileNotFoundException()
     {
-        super(DEFAULT_MSG);
+        super(DEFAULT_MSG, DEFAULT_CODE);
     }
 
-    public GluResourceNotFoundException(String msg)
+    public GluFileNotFoundException(String msg)
     {
-        super(msg);
+        super(msg, DEFAULT_CODE);
     }
     
-    public GluResourceNotFoundException(Throwable ex)
+    public GluFileNotFoundException(Throwable ex)
     {
-        super(DEFAULT_MSG, ex);
+        super(DEFAULT_MSG, DEFAULT_CODE, ex);
     }
 
-    public GluResourceNotFoundException(String msg, Throwable ex)
+    public GluFileNotFoundException(String msg, Throwable ex)
     {
-        super(msg, ex);
+        super(msg, DEFAULT_CODE, ex);
     }
-    
-    public int getCode()
-    {
-        return CODE;
-    }
-
 }
 
 

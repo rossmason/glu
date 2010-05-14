@@ -48,14 +48,6 @@ class ResourceBrowser(BaseBrowser):
         """
         method = self.request.getRequestMethod()
 
-        if method == "DELETE":
-            try:
-                deleteResourceFromStorage(self.request.getRequestPath())
-                return (200, "Resource deleted")
-            except GluException, e:
-                return (e.code, str(e))
-
-        settings = Settings.getSettingsObject()
         if method == "GET":
             # It's the responsibility of the browser class to provide breadcrums
             self.breadcrums = [ ("Home", settings.DOCUMENT_ROOT), ("Resource", settings.PREFIX_RESOURCE) ]
@@ -78,7 +70,23 @@ class ResourceBrowser(BaseBrowser):
             path          = self.request.getRequestPath()[len(settings.PREFIX_RESOURCE):]
             path_elems    = path.split("/")[1:]
             resource_name = path_elems[0]   # This should be the name of the resource base
+
+            # If the path ends with a '/' then there might be an empty element at the end,
+            # which we can remove.
+            if not path_elems[-1:][0]:
+                path_elems.pop()
             
+            # Before calling delete on a resource, we have to make sure that this DELETE
+            # is just for the resource itself, not a DELETE to some of the sub-services.
+            # If it's just for the resource then there will be only one path element (the
+            # resource name).
+            if method == "DELETE"  and  len(path_elems) == 1:
+                try:
+                    deleteResourceFromStorage(self.request.getRequestPath())
+                    return (200, "Resource deleted")
+                except GluException, e:
+                    return (e.code, str(e))
+
             # Get the public representation of the resource
             rinfo = _getResourceDetails(resource_name)
             complete_resource_def = rinfo['complete_resource_def']
@@ -102,12 +110,13 @@ class ResourceBrowser(BaseBrowser):
                 # This service has some possible runtime parameters defined.
                 runtime_param_dict = self.request.getRequestQueryDict()
 
-                service_name = path_elems[1]
-                input        = self.request.getRequestBody()
+                service_name      = path_elems[1]
+                positional_params = path_elems[2:]
+                input             = self.request.getRequestBody()
                 try:
                     code, data = _accessComponentService(component, services, complete_resource_def,
-                                                    resource_name, service_name, runtime_param_dict,
-                                                    input, self.request)
+                                                         resource_name, service_name, positional_params,
+                                                         runtime_param_dict, input, self.request, self.request.getRequestMethod())
                 except GluException, e:
                     code = e.getCode()
                     data = e.getMessage()
@@ -117,6 +126,7 @@ class ResourceBrowser(BaseBrowser):
                     print traceback.format_exc()
                     log("Exception in component for service '%s': %s" % (service_name, str(e)), facility=LOGF_COMPONENTS)
                     code, data = (500, "Internal server error. Details have been logged...")
+
                 if code != 404  and  method == "GET"  and  service_name in services:
                     self.breadcrums.append((service_name, services[service_name]['uri']))
 

@@ -12,15 +12,60 @@ import java.util.Vector;
  */
 
 
-class Tuple
+class A
 {
-    public static Vector make(Object ... elems)
+    private int DEFAULT = 1;
+    
+    public     int a;
+    protected  int b;
+    
+    public A()
     {
-        Vector v = new Vector();
-        for (Object e : elems) {
-            v.add(e);
-        }
-        return v;
+        a = DEFAULT;
+        b = DEFAULT;
+    }
+    
+    public A(int x)
+    {
+        a = x;
+        b = x;
+    }
+    
+    public String x()
+    {
+        return "A";
+    }
+    
+    public int getA()
+    {
+        return a;
+    }
+    
+    public void blah()
+    {
+        System.out.println("A: " + getA());
+        System.out.println("B: " + this.b);
+        System.out.println("X: " + x());
+    }
+}
+
+class B extends A
+{
+    /*
+    public     int a;
+    protected  int b;
+    private    int c;
+    */
+    private static int DEFAULT = 2;
+    
+    public B()
+    {
+        super(DEFAULT);
+    }
+    
+    public String x()
+    {
+        return "B";
     }
 }
 
@@ -29,27 +74,17 @@ public class Foo
 {
     public static void main(String[] args)
     {
-        HashMap map = new HashMap();
+        System.out.println("------------------ A via a");
+        A a = new A();
+        a.blah();
         
-        map.put("foo", "bar");
-        map.put(1, 2);
-        map.put(true, "argh");
-        System.out.println(map.get("foo"));
-        System.out.println(map.get(1));
-        System.out.println(map.get(true));
+        System.out.println("------------------ B via b");
+        B b = new B();
+        b.blah();
         
-        Vector v = new Vector();
-        
-        v.add("foo");
-        v.add(123);
-        v.add(true);
-        
-        
-        for (Object i : v) {
-            System.out.println(i);
-            
-        }
-
+        System.out.println("------------------ B via a");
+        a = new B();
+        a.blah();
     }
 
 }

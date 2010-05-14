@@ -10,44 +10,36 @@
 
 package org.mulesource.glu.exceptions;
 
-import org.mulesource.glu.exceptions.GluException;
-
 public class GluMethodNotAllowedException extends GluException
 {
     /*
      * The default message and code is what makes this class unique.
      */
-    private final static String DEFAULT_MSG = "Method not allowed";
-    private final static int    CODE        = 405;
+    private final static String DEFAULT_MSG  = "Method not allowed";
+    private final static int    DEFAULT_CODE = 405;
     
     /*
      * The usual set of constructors for exceptions
      */
     public GluMethodNotAllowedException()
     {
-        super(DEFAULT_MSG);
+        super(DEFAULT_MSG, DEFAULT_CODE);
     }
 
     public GluMethodNotAllowedException(String msg)
     {
-        super(msg);
+        super(msg, DEFAULT_CODE);
     }
     
     public GluMethodNotAllowedException(Throwable ex)
     {
-        super(DEFAULT_MSG, ex);
+        super(DEFAULT_MSG, DEFAULT_CODE, ex);
     }
 
     public GluMethodNotAllowedException(String msg, Throwable ex)
     {
-        super(msg, ex);
+        super(msg, DEFAULT_CODE, ex);
     }
-    
-    public int getCode()
-    {
-        return CODE;
-    }
-
 }
 
 

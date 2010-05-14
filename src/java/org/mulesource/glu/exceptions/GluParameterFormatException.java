@@ -10,44 +10,36 @@
 
 package org.mulesource.glu.exceptions;
 
-import org.mulesource.glu.exceptions.GluException;
-
 public class GluParameterFormatException extends GluException
 {
     /*
      * The default message and code is what makes this class unique.
      */
-    private final static String DEFAULT_MSG = "Wrong parameter type";
-    private final static int    CODE        = 400;
+    private final static String DEFAULT_MSG  = "Wrong parameter type";
+    private final static int    DEFAULT_CODE = 400;
     
     /*
      * The usual set of constructors for exceptions
      */
     public GluParameterFormatException()
     {
-        super(DEFAULT_MSG);
+        super(DEFAULT_MSG, DEFAULT_CODE);
     }
 
     public GluParameterFormatException(String msg)
     {
-        super(msg);
+        super(msg, DEFAULT_CODE);
     }
     
     public GluParameterFormatException(Throwable ex)
     {
-        super(DEFAULT_MSG, ex);
+        super(DEFAULT_MSG, DEFAULT_CODE, ex);
     }
 
     public GluParameterFormatException(String msg, Throwable ex)
     {
-        super(msg, ex);
+        super(msg, DEFAULT_CODE, ex);
     }
-    
-    public int getCode()
-    {
-        return CODE;
-    }
-
 }
 
 

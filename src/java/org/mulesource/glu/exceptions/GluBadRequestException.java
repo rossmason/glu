@@ -10,44 +10,36 @@
 
 package org.mulesource.glu.exceptions;
 
-import org.mulesource.glu.exceptions.GluException;
-
 public class GluBadRequestException extends GluException
 {
     /*
      * The default message and code is what makes this class unique.
      */
-    private final static String DEFAULT_MSG = "Bad request";
-    private final static int    CODE        = 400;
+    private final static String DEFAULT_MSG  = "Bad request";
+    private final static int    DEFAULT_CODE = 400;
     
     /*
      * The usual set of constructors for exceptions
      */
     public GluBadRequestException()
     {
-        super(DEFAULT_MSG);
+        super(DEFAULT_MSG, DEFAULT_CODE);
     }
 
     public GluBadRequestException(String msg)
     {
-        super(msg);
+        super(msg, DEFAULT_CODE);
     }
     
     public GluBadRequestException(Throwable ex)
     {
-        super(DEFAULT_MSG, ex);
+        super(DEFAULT_MSG, DEFAULT_CODE, ex);
     }
 
     public GluBadRequestException(String msg, Throwable ex)
     {
-        super(msg, ex);
+        super(msg, DEFAULT_CODE, ex);
     }
-    
-    public int getCode()
-    {
-        return CODE;
-    }
-
 }
 
 

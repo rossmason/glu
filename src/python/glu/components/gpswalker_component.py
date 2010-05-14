@@ -43,7 +43,7 @@ class GpsWalkerComponent(BaseComponent):
                        }
     
             
-    def walk(self, request, input, params):
+    def walk(self, request, input, params, method):
         """
         Performs a random modification of passed in GPS coordinates.
         
@@ -55,6 +55,9 @@ class GpsWalkerComponent(BaseComponent):
         
         @param params:     Dictionary of parameter values.
         @type params:      dict
+        
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @return:           Return dictionary with 'lat' and 'long' keys.
         @rtype:            dict
@@ -84,7 +87,7 @@ class GpsWalkerComponent(BaseComponent):
         "Auckland"     : { "lat" : -36.848461, "long" : 174.762183 },
     }
 
-    def city(self, request, input, params):
+    def city(self, request, input, params, method):
         """
         Return the coordinates of a specified city.
 

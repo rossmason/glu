@@ -9,8 +9,9 @@ from copy import deepcopy
 #Glu imports
 from org.mulesource.glu  import Settings
 
-from glu.core.util       import Url 
-from glu.core.parameter  import *
+from glu.core.util                       import Url 
+from glu.core.parameter                  import *
+from glu.storageabstraction.file_storage import FileStorage
 
 #
 # Utility method.
@@ -49,22 +50,14 @@ class BaseComponent(object):
         DESCRIPTION
         DOCUMENTATION
         SERVICES
-        baseService()
         
-    SERVICES and baseService() need to be explained.
-    
-    baseServices() is the normal method that is called to processes a request.
-    However, a component may also specify 'sub-SERVICES'. To do so, implement any
-    number of additional services methods (with the same interface as baseService()).
-    Then list those methods in the 'SERVICES' dictionary (use any name as key to
-    a tuple containing the method itself as well as a doc string). Then your
+    A component specifies 'sub-SERVICES'. To do so, implement any number of services
+    methods. Then list those methods in the 'SERVICES' dictionary (use any name as
+    key to a tuple containing the method itself as well as a doc string). Then your
     additional methods will be exposed as sub-services, which can be accessed
-        like this: <resource_uri>/<sub_service_method>/....
+    like this: <resource_uri>/<sub_service_method>/....
+
     The name of the sub-service method is directly specified in the URI.
-    
-    If you don't want your component to provide a base service (a fall back that catches
-    all request that are not handled by a sub-service method) then specify the
-    BASE_SERVICE flag in the class a false.
     
     """
     NAME             = ""
@@ -75,14 +68,48 @@ class BaseComponent(object):
     """A short, one line description."""
     DOCUMENTATION    = ""
     """Longer, man-page style documentation."""
-    BASE_SERVICE     = True
-    """Indicates that the component provides a base service on the resource's base URI."""
     SERVICES         = None
     """A dictionary keying method name to docstring for exposed sub-service methods. May be left empty."""
     
-    def __init__(self):
-        self.__accountname = None
-        self.__password    = None
+    def __init__(self, resource_name=None):
+        self.__accountname   = None
+        self.__password      = None
+        self.__resource_name = resource_name
+
+    def getMyResourceName(self):
+        return self.__resource_name
+
+    def getMyResourceUri(self):
+        return "%s/%s" % (settings.PREFIX_RESOURCE, self.getMyResourceName())
+
+    def getFileStorage(self, namespace=""):
+        """
+        Return a FileStorage object, which can be used to store data.
+
+        Storage spaces for each resource are separated by resource name,
+        this means that two resources cannot share their stored objects,
+        even if they are of the same type.
+
+        @param namespace:   A namespace that is used by this resource.
+                            Per invocation a resource may chose to create
+                            yet another resource namespace under (or within)
+                            its inherent namespace.
+        @type namespace:    string
+
+        @return:            FileStorage object.
+
+        """
+        my_resource_name = self.getMyResourceName()
+        if my_resource_name:
+            if namespace:
+                unique_namespace = "%s__%s" % (self.getMyResourceName(), namespace)
+            else:
+                unique_namespace = self.getMyResourceName()
+            storage = FileStorage(storage_location="storageDB", unique_prefix=unique_namespace)
+            return storage
+        else:
+            # Cannot get storage object when I am not running as a resource
+            return None
     
     def __get_http_opener(self, url):
         """
@@ -196,6 +223,7 @@ class BaseComponent(object):
         # There is also a set of resource meta parameters that always remain
         # the same. Just some of the defaults and descriptions may change
         # from component to component.
+        #
         rp = dict(suggested_name = ParameterDef(PARAM_STRING,
                                                 "Can be used to suggest the resource name to the server",
                                                 required=True),

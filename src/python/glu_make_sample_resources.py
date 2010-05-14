@@ -51,7 +51,10 @@ def send_test(data, code_url):
     opener = MyOpener()
     opener.addheader('Connection', 'close')
     opener.addheader('Accept', 'application/json')
-    opener.add_msg(json.dumps(data))
+    if type(data) is str:
+        opener.add_msg(data)
+    else:
+        opener.add_msg(json.dumps(data))
     stream = opener.send(code_url)
     
     if stream:
@@ -134,6 +137,187 @@ send_test({
           },
           code_url=SERVER_URL + "/code/SalesforceComponent")
 
-send_test("blah blah", "http://localhost:8001/resource/MySalesforceResource/query/contact")
+# Create a Marakana component
+send_test({
+            'params': {
+                'salesforce_resource' : "/resource/MySalesforceResource"
+            },
+            'resource_creation_params' : {
+                'suggested_name' : 'MyMarakanaResource'
+            },
+          },
+          code_url=SERVER_URL + "/code/MarakanaComponent")
+
+buf = """
+<?xml version="1.0" encoding="UTF-8"?>
+<spark-domain xmlns="http://marakana.com/xml/ns/spark/domain"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://marakana.com/xml/ns/spark/domain schema/domain_1.0.xml"
+  version="1.0">
+
+  <product-order id="723439" created="2010-03-15T09:15:05Z">
+    <status>NEW</status>
+    <customer id="541332" created="2010-03-15T09:15:05Z">
+      <salutation>Mr.</salutation>
+      <salutation>Mrs.</salutation>
+      <salutation>Ms.</salutation>
+      <first-name>Adam</first-name>
+      <last-name>Watson</last-name>
+      <organization-ref id="283190">ACME Inc.</organization-ref>
+      <title>Software Developer</title>
+      <office-phone>415-647-7000</office-phone>
+      <email>m.rist@enbw.com</email>
+      <address>
+        <street1>1071 Mississippi St</street1>
+        <city>San Francisco</city>
+        <region>CA</region>
+        <postal-code>94107</postal-code>
+        <country>US</country>
+        <type>BUSINESS</type>
+      </address>
+      <password-set>true</password-set>
+      <enabled>true</enabled>
+    </customer>
+    <customer-organization-ref id="283190">ACME Inc.</customer-organization-ref>
+    <coupon-discount>
+      <coupon-ref id="872">W7S-8A1-X5Q-9X4</coupon-ref>
+      <discount currency="USD">50.00</discount>
+    </coupon-discount>
+    <taxable-subtotal currency="USD">125.00</taxable-subtotal>
+    <tax-rate>0.00</tax-rate>
+    <credit-card-payment id="432523">
+      <status>PROCESSED</status>
+      <first-name>Tom</first-name>
+      <last-name>Simon</last-name>
+      <organization>ACME Inc.</organization>
+      <phone>415-647-7001</phone>
+      <address>
+        <street1>1071 Mississippi St</street1>
+        <city>San Francisco</city>
+        <region>CA</region>
+        <postal-code>94107</postal-code>
+        <country>US</country>
+        <type>BUSINESS</type>
+      </address>
+      <amount currency="USD">125.00</amount>
+      <processed-amount currency="USD">125.00</processed-amount>
+      <credit-card-type>VISA</credit-card-type>
+      <credit-card-number>************1234</credit-card-number>
+      <credit-card-processing-date>2010-03-15T09:15:08Z</credit-card-processing-date>
+      <processing-confirmation>WSWX078VZKJ421NA7</processing-confirmation>
+    </credit-card-payment>
+    <product-item id="234232">
+      <product-ref id="234">Learn How to Program in 24 Hours!</product-ref>
+      <unit-price currency="USD">175.00</unit-price>
+      <quantity>1</quantity>
+      <download-count>0</download-count>
+      <shipping-characteristics>
+        <shipping-method>DOWNLOAD</shipping-method>
+        <shipping-file-to-download>/static/premium/self-paced/234/v1/index.html</shipping-file-to-download>
+        <shipping-max-download-days>90</shipping-max-download-days>
+        <shipping-directory-download-enabled>true</shipping-directory-download-enabled>
+      </shipping-characteristics>
+    </product-item>
+  </product-order>
+
+</spark-domain>
+"""
+send_test(buf, code_url=SERVER_URL + "/resource/MyMarakanaResource/orders")
+
+
+buf = """
+<?xml version="1.0" encoding="UTF-8"?>
+<spark-domain xmlns="http://marakana.com/xml/ns/spark/domain"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://marakana.com/xml/ns/spark/domain schema/domain_1.0.xml"
+  version="1.0">
+
+  <registration-order id="723432" created="2010-04-15T09:15:05Z">
+    <status>NEW</status>
+    <customer id="541332" created="2010-04-15T09:15:05Z">
+      <salutation>Mr.</salutation>
+      <first-name>Adam</first-name>
+      <last-name>Watson</last-name>
+      <organization-ref id="283190">ACME Inc.</organization-ref>
+      <title>Software Developer</title>
+      <office-phone>415-647-7000</office-phone>
+      <email>adam.watson@acme.com</email>
+      <address>
+        <street1>1071 Mississippi St</street1>
+        <city>San Francisco</city>
+        <region>CA</region>
+        <postal-code>94107</postal-code>
+        <country>US</country>
+        <type>BUSINESS</type>
+      </address>
+      <password-set>true</password-set>
+      <enabled>true</enabled>
+    </customer>
+    <customer-organization-ref id="283190">ACME Inc.</customer-organization-ref>
+    <coupon-discount>
+      <coupon-ref id="873">Y7S-8A1-X5Q-9X9</coupon-ref>
+      <discount currency="USD">100.00</discount>
+    </coupon-discount>
+    <taxable-subtotal currency="USD">1900.00</taxable-subtotal>
+    <tax-rate>0.00</tax-rate>
+    <credit-card-payment id="432523">
+      <status>PROCESSED</status>
+      <first-name>Tom</first-name>
+      <last-name>Simon</last-name>
+      <organization>ACME Inc.</organization>
+      <phone>415-647-7001</phone>
+      <address>
+        <street1>1071 Mississippi St</street1>
+        <city>San Francisco</city>
+        <region>CA</region>
+        <postal-code>94107</postal-code>
+        <country>US</country>
+        <type>BUSINESS</type>
+      </address>
+      <amount currency="USD">1900.00</amount>
+      <processed-amount currency="USD">1900.00</processed-amount>
+      <credit-card-type>VISA</credit-card-type>
+      <credit-card-number>************1234</credit-card-number>
+      <credit-card-processing-date>2010-04-15T09:15:08Z</credit-card-processing-date>
+      <processing-confirmation>FSWE078VZKJ421NA8</processing-confirmation>
+    </credit-card-payment>
+    <registration id="8932123">
+      <status>CONFIRMED</status>
+      <participant-ref id="541332">Adam Watson</participant-ref>
+      <course-event-ref id="912342">
+        <start-time>2010-06-10T19:25:38Z</start-time>
+        <status>TENTATIVE</status>
+        <location-ref id="2">San Francisco</location-ref>
+        <course-ref id="232">Introduction to Programming</course-ref>
+        <provider-ref id="14">Super Training Inc.</provider-ref>
+      </course-event-ref>
+      <fee currency="USD">1000.00</fee>
+    </registration>
+    <registration id="8932124">
+      <status>CONFIRMED</status>
+      <participant id="541332">
+        <salutation>Mrs.</salutation>
+        <first-name>Anna</first-name>
+        <last-name>Markova</last-name>
+        <organization-ref id="283190">ACME Inc.</organization-ref>
+        <title>Sr. Software Developer</title>
+        <office-phone>415-647-7003</office-phone>
+        <email>anna.markova@acme.com</email>
+        <password-set>false</password-set>
+        <enabled>true</enabled>
+      </participant>
+      <course-event-ref id="912342">
+        <start-time>2010-06-10T19:25:38Z</start-time>
+        <status>TENTATIVE</status>
+        <location-ref id="2">San Francisco</location-ref>
+        <course-ref id="232">Introduction to Programming</course-ref>
+        <provider-ref id="14">Super Training Inc.</provider-ref>
+      </course-event-ref>
+      <fee currency="USD">1000.00</fee>
+    </registration>
+  </registration-order>
+</spark-domain>
+"""
+send_test(buf, code_url=SERVER_URL + "/resource/MyMarakanaResource/orders")
 
 print "\nDone..."

@@ -10,44 +10,36 @@
 
 package org.mulesource.glu.exceptions;
 
-import org.mulesource.glu.exceptions.GluException;
-
 public class GluPermissionDeniedException extends GluException
 {
     /*
      * The default message and code is what makes this class unique.
      */
-    private final static String DEFAULT_MSG = "Permission denied";
-    private final static int    CODE        = 403;
+    private final static String DEFAULT_MSG  = "Permission denied";
+    private final static int    DEFAULT_CODE = 403;
     
     /*
      * The usual set of constructors for exceptions
      */
     public GluPermissionDeniedException()
     {
-        super(DEFAULT_MSG);
+        super(DEFAULT_MSG, DEFAULT_CODE);
     }
 
     public GluPermissionDeniedException(String msg)
     {
-        super(msg);
+        super(msg, DEFAULT_CODE);
     }
     
     public GluPermissionDeniedException(Throwable ex)
     {
-        super(DEFAULT_MSG, ex);
+        super(DEFAULT_MSG, DEFAULT_CODE, ex);
     }
 
     public GluPermissionDeniedException(String msg, Throwable ex)
     {
-        super(msg, ex);
+        super(msg, DEFAULT_CODE, ex);
     }
-    
-    public int getCode()
-    {
-        return CODE;
-    }
-
 }
 
 

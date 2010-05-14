@@ -13,37 +13,55 @@ package org.mulesource.glu.exceptions;
 public class GluException extends Exception
 {
     /*
-     * The default message and code is what makes this class unique.
+     * In addition to a message, a Glu Exception also carries a code,
+     * which is equivalent to an HTTP status code.
      */
     private final static String DEFAULT_MSG  = "Internal server error";  
-    private final static int    CODE         = 500;
+    private final static int    DEFAULT_CODE = 500;
+    
+    protected String msg;
+    protected int    code;
     
     /*
      * The usual set of constructors for exceptions
      */
     public GluException()
     {
-        super(DEFAULT_MSG);
+        this(DEFAULT_MSG, DEFAULT_CODE);
     }
 
     public GluException(String msg)
     {
-        super(msg);
+        this(msg, DEFAULT_CODE);
     }
     
     public GluException(Throwable ex)
     {
-        super(DEFAULT_MSG, ex);
+        this(DEFAULT_MSG, DEFAULT_CODE, ex);
     }
 
     public GluException(String msg, Throwable ex)
     {
+        this(msg, DEFAULT_CODE, ex);
+    }
+    
+    public GluException(String msg, int code)
+    {
+        super(msg);
+        this.msg  = msg;
+        this.code = code;
+    }
+    
+    public GluException(String msg, int code, Throwable ex)
+    {
         super(msg, ex);
+        this.msg  = msg;
+        this.code = code;
     }
     
     public int getCode()
     {
-        return CODE;
+        return code;
     }
 }
 

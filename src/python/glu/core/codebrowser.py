@@ -33,21 +33,24 @@ def getComponentClass(uri):
     # Instantiate the component
     return _CODE_MAP.get(component_name)
 
-def getComponentInstance(uri):
+def getComponentInstance(uri, resource_name = None):
     """
     Return an instantiated component, the class of which was identified by a URI.
 
-    @param uri:     The official URI for this code.
-    @type uri:      string
+    @param uri:           The official URI for this code.
+    @type uri:            string
+
+    @param resource_name: Name of the resource for which the component was instantiated.
+    @type resource_name:  string
     
-    @return         Instance of the specified component
-                    or None if no matching component class was found.
-    @rtype          Instance of a class derived from BaseComponent
+    @return               Instance of the specified component
+                          or None if no matching component class was found.
+    @rtype                Instance of a class derived from BaseComponent
     
     """
     component_class = getComponentClass(uri)
     if component_class:
-        return component_class()
+        return component_class(resource_name)
     else:
         return None
         

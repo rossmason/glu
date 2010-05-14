@@ -338,7 +338,7 @@ class JythonJavaHttpServer(BaseHttpServer):
         
         """
         self.request_handler = request_handler
-        self.__native_server = HttpServer.create(InetSocketAddress(port), 5);
+        self.__native_server = HttpServer.create(int(InetSocketAddress(port)), 5);
         self.__native_server.createContext(Settings.getSettingsObject().DOCUMENT_ROOT,
                                            __HttpHandler(request_handler));
         self.__native_server.setExecutor(None);

@@ -67,7 +67,7 @@ class RequestDispatcher(object):
             (code, data) = e.getCode(), e.getMessage()
         except GluMandatoryParameterMissingException, e:
             (code, data) = e.getCode(), e.getMessage()
-        except GluResourceNotFoundException, e:
+        except GluFileNotFoundException, e:
             (code, data) = e.getCode(), e.getMessage()
         except GluException, e:
             (code, data) = ( 400, "Bad request: " + e.getMessage())

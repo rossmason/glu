@@ -1,6 +1,8 @@
 
 import glujson as json
 
+from org.mulesource.glu import Settings as settings
+
 import glu.core.codebrowser  # Wanted to be much more selective here, but a circular
                              # import issue was most easily resolved like this.
                              # We only need getComponentInstance() from this module.
@@ -11,7 +13,7 @@ from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
                            retrieveResourceFromStorage, getResourceUri
 
 def _accessComponentService(component, services, complete_resource_def, resource_name, service_name,
-                       runtime_param_dict, input, request=None, direct_call=False):
+                            positional_params, runtime_param_dict, input, request="GET", method=None, direct_call=False):
     """
     Passes control to a service method exposed by a component.
     
@@ -29,17 +31,24 @@ def _accessComponentService(component, services, complete_resource_def, resource
     @param complete_resource_def: The entire resource definition as it was retrieved from storage.
     @type complete_resource_def:  dict
     
-    @param resource_name:         Name of the resource
+    @param resource_name:         Name of the resource. This may contain '/' if positional parameters
+                                  are defined in the URL.
     @type resource_name:          string
     
     @param service_name:          The name of the requested service
     @type service_name:           string
     
+    @param positional_params:     List of positional parameters.
+    @type positional_params:      list
+
     @param runtime_param_dict:    Dictionary of URL command line arguments.
     @type runtime_param_dict:     dict
     
     @param input:                 Any potential input (came in the request body)
     @type input:                  string
+
+    @param request:               HTTP request structure.
+    @type request:                BaseHttpRequest
     
     @param direct_call:           Set this if the function is called directly from another component
                                   or piece of code that's not part of Glu. In that case, it wraps
@@ -54,9 +63,54 @@ def _accessComponentService(component, services, complete_resource_def, resource
         if not service_def:
             raise GluException("Service '%s' is not available in this resource." % service_name)
 
+        #
         # Some runtime parameters may have been provided as arguments on
         # the URL command line. They need to be processed and added to
         # the parameters if necessary.
+        #
+        # Parameters may either appear as named arguments after the URL,
+        # like this:  http://resource/somename?name1=val1&name2=val2
+        #
+        # If positional parameters are defined for the service then they
+        # may be extracted from the URL. For example, if the positional
+        # parameters are defined as [ "name1", "name2" ] then the URL can
+        # be this: http://resource/somename/val1/val2/
+        # With that URL and using the order that's defined in the
+        # positional parameter definition, the values are assigned
+        # like this: name1=val1, name2=val2
+        #
+        # Parameters specified in the first form (named arguments after '?')
+        # override the same parameters specified in the URL itself.
+        #
+        # Why did we not check for those parameters earlier when the
+        # runtime_param_dict parameter was created before this function
+        # was called? Because we may have been called out of the accessResource()
+        # method, which could possibly use a complete 
+        #
+        if positional_params:
+            try:
+                pos_param_def = complete_resource_def['public']['services'][service_name]['positional_params']
+            except Exception, e:
+                pos_param_def = None
+            if pos_param_def:
+                # Iterating over all the positional parameters that are provided in the URI
+                # There might be some empty ones (when the URL has two // in a row or ends
+                # in a /). In that case, we skip that parameter.
+                pos_def_index = 0
+                for value in positional_params:
+                    if value:
+                        pname = pos_param_def[pos_def_index]
+                        pos_def_index += 1
+                        # Put the new value in the runtime_parameter_dict, but only if it
+                        # doesn't exist there already (parameters specified after a '?'
+                        # are in there and they take precedence).
+                        if pname not in runtime_param_dict:
+                            runtime_param_dict[pname] = value
+                    if pos_def_index == len(pos_param_def):
+                        # No more positional parameters defined? We will ignore whatever
+                        # else is in the URL
+                        break
+            
         runtime_param_def  = service_def.get('params')
         if runtime_param_def:
             # If the 'allow_params_in_body' flag is set for a service then we
@@ -84,17 +138,20 @@ def _accessComponentService(component, services, complete_resource_def, resource
     
         services = complete_resource_def['public']['services']
         if service_name in services  and  hasattr(component, service_name):
-            service_method    = getattr(component, service_name)
+            service_method = getattr(component, service_name)
             
+            # Get the parameters from the resource definition time
             params = complete_resource_def['private']['params']
+
             if runtime_param_dict:
                 # Merge the runtime parameters with the static parameters
                 # from the resource definition.
                 params.update(runtime_param_dict)
             
-            code, data = service_method(request     = request,
-                                        input       = input,
-                                        params      = params)
+            code, data = service_method(request = request,
+                                        input   = input,
+                                        params  = params,
+                                        method  = method)
         else:
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:
@@ -129,7 +186,7 @@ def _getResourceDetails(resource_name):
     # Instantiate the component to get the exposed sub-services. Their info
     # is added to the public information about the resource.
     code_uri  = complete_resource_def['private']['code_uri']
-    component = glu.core.codebrowser.getComponentInstance(code_uri)
+    component = glu.core.codebrowser.getComponentInstance(code_uri, resource_name)
     services  = component._getServices(resource_base_uri = resource_home_uri)
     public_resource_def['services'] = services
     
@@ -140,11 +197,13 @@ def _getResourceDetails(resource_name):
                 component             = component)
 
      
-def runResource(resource_name, service_name, input=None, params=None):
+def accessResource(resource_uri, input=None, params=None, method="GET"):
     """
-    Run a resource identified by its URI.
+    Access a resource identified by its URI.
     
-    @param resource_name:    The name of the resource.
+    @param resource_name:    The uri of the resource. We allow absolute URIs (well, later at least),
+                             and relative URIs (starting with "/resource/").
+                             Contains resource name, service name and any positional parameters.
     @type resource_name:     string
     
     @param service_name:     Name of the desired service
@@ -156,13 +215,28 @@ def runResource(resource_name, service_name, input=None, params=None):
     @param params:           Any run-time parameters for this service as key/value pairs.
     @type params:            dict
     
+    @param method:           The HTTP method to be used.
+    @type method:            string
+    
     """
+    if not resource_uri.startswith(settings.PREFIX_RESOURCE + "/"):
+        raise Exception("Malformed resource name. Needs to be absolute or start with '%s'" % settings.PREFIX_RESOURCE)
+    resource_uri = resource_uri[len(settings.PREFIX_RESOURCE)+1:]   # Strip the prefix off
+
     # Get the public representation of the resource
+    path_components   = resource_uri.split("/")
+    resource_name     = path_components[0]
+    service_name      = path_components[1]
+    positional_params = path_components[2:]
+
     rinfo = _getResourceDetails(resource_name)
+
+    if params is None:
+        params = dict()
     
     code, data = _accessComponentService(rinfo['component'], rinfo['public_resource_def']['services'],
-                                    rinfo['complete_resource_def'], resource_name,
-                                    service_name, params, input, None, True)
+                                         rinfo['complete_resource_def'], resource_name,
+                                         service_name, positional_params, params, input, None, method, True)
     return code, data
  
  

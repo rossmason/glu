@@ -10,16 +10,20 @@ Also defines a base class for all components.
 # 
 
 # Exporting these components
-from glu.components.base_component      import BaseComponent
-from glu.components.twitter_component   import TwitterComponent
-from glu.components.gsearch_component   import GsearchComponent
-from glu.components.combiner_component  import CombinerComponent
-from glu.components.gpswalker_component import GpsWalkerComponent
+from glu.components.base_component         import BaseComponent
+from glu.components.twitter_component      import TwitterComponent
+from glu.components.gsearch_component      import GsearchComponent
+from glu.components.combiner_component     import CombinerComponent
+from glu.components.gpswalker_component    import GpsWalkerComponent
+from glu.components.storage_component      import StorageComponent
+#from glu.components.salesforce_component   import SalesforceComponent
+#from glu.components.marakana_component     import MarakanaComponent
 
 #
 # The known components
 #
-_KNOWN_COMPONENTS = [ TwitterComponent, GsearchComponent, CombinerComponent, GpsWalkerComponent ]
+_KNOWN_COMPONENTS = [ TwitterComponent, GsearchComponent, CombinerComponent, GpsWalkerComponent, StorageComponent ]
+#                      SalesforceComponent, MarakanaComponent ]
 
 # -------------------------------------------------------------------------------------
 # Don't edit down here...
