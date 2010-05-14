@@ -348,6 +348,41 @@ def test_60_examine_resource():
     }
     _dict_compare(data, resource_def)
 
+def test_70_positional_params():
+    """
+    Test that positional parameters can be used successfully.
+
+    """
+    # Start by creating a file storage resource
+    d = {
+            "resource_creation_params" : { "suggested_name" : "_test_foobarstorage", "desc" : "A foobar storage resource" }
+        }
+    data, resp = _send_data("/code/StorageComponent", d)
+    assert(resp.getStatus() == 201)
+    assert(data['status']   == "created")
+    assert(data['name']     == "_test_foobarstorage")
+    assert(data['uri']      == "/resource/_test_foobarstorage")
+    assert(len(data)        == 3)
+
+    # Confirm that there is nothing stored
+    cdef, resp = _get_data("/resource/_test_foobarstorage/files")
+    assert(resp.getStatus() == 200)
+    assert(cdef == [])
+
+    # Store a file
+    data, resp = _send_data("/resource/_test_foobarstorage/files/foo", "This is a buffer")
+    assert(data == "Successfully stored")
+    assert(resp.getStatus() == 200)
+
+    # Retrieve a file
+    cdef, resp = _get_data("/resource/_test_foobarstorage/files/foo")
+    assert(cdef == '"This is a buffer"')
+    assert(resp.getStatus() == 200)
+
+    # Delete the file again
+    buf, resp = _delete("/resource/_test_foobarstorage/files/foo")
+    assert(resp.getStatus() == 200)
+
 def test_999_cleanup():
     """
     Find all resources starting with "_test_" and delete them.

@@ -122,7 +122,7 @@ send_test({
             },
           },
           code_url=SERVER_URL + "/code/StorageComponent")
-
+'''
 # Create a Salesforce component
 send_test({
             'params' : {
@@ -319,5 +319,8 @@ buf = """
 </spark-domain>
 """
 send_test(buf, code_url=SERVER_URL + "/resource/MyMarakanaResource/orders")
+'''
+
+send_test("This is some text!", code_url=SERVER_URL + "/resource/MyStorageResource/files/foo")
 
 print "\nDone..."
