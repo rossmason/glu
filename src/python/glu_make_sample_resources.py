@@ -115,6 +115,17 @@ send_test({
           },
           code_url=SERVER_URL + "/code/StorageComponent")
 
+# Create Java test component
+send_test({
+            'params' : {
+                "api_key" : "Foobar",
+            },
+            'resource_creation_params' : {
+                'suggested_name' : 'MyJavaTestComponent'
+            },
+          },
+          code_url=SERVER_URL + "/code/TestComponent")
+
 # Create another Storage component
 send_test({
             'resource_creation_params' : {

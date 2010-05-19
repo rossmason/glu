@@ -86,7 +86,7 @@ class BaseBrowser(object):
 
         """
         if self.human_client:
-            renderer     = HtmlRenderer(self.renderer_args, self.breadcrums)
+            renderer = HtmlRenderer(self.renderer_args, self.breadcrums)
         else:
             renderer = JsonRenderer(self.renderer_args)
         return renderer.CONTENT_TYPE, renderer.base_renderer(data, top_level=True)

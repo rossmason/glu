@@ -35,7 +35,10 @@ from glu.platform_specifics import STORAGE_OBJECT
 from glu.exceptions       import *
 from glu.logger           import *
 from glu.core.parameter   import TYPE_COMPATIBILITY
-from glu.core.util        import Url
+
+from org.mulesource.glu.util import Url
+
+from glu.languages import *
 
 
 def getResourceUri(resource_name):
@@ -292,6 +295,7 @@ def makeResource(component_class, params):
     # We get the meta data (parameter definition) from the component
     component            = component_class()
     component_params_def = component.getMetaData()
+    component_params_def = laguageStructToPython(component, component_params_def)
 
     #
     # First we check whether there are any unknown parameters specified

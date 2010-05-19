@@ -9,9 +9,10 @@ from copy import deepcopy
 #Glu imports
 import glu.settings as settings
 
-from glu.core.util                       import Url 
 from glu.core.parameter                  import *
 from glu.storageabstraction.file_storage import FileStorage
+
+from org.mulesource.glu.util import Url
 
 #
 # Utility method.
@@ -60,6 +61,8 @@ class BaseComponent(object):
     The name of the sub-service method is directly specified in the URI.
     
     """
+    LANGUAGE         = "PYTHON"
+    
     NAME             = ""
     """The name used to refer to this component. Also used to construct its URL. No spaces allowed."""
     PARAM_DEFINITION = dict()

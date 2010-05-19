@@ -9,11 +9,12 @@ import glujson as json
 import glu.settings as settings
 
 from glu.exceptions       import GluException
-from glu.components            import _CODE_MAP
+from glu.components       import _CODE_MAP
 from glu.resources        import makeResource 
 from glu.core.basebrowser import BaseBrowser
-from glu.core.util        import Url
+from glu.languages        import *
 
+from org.mulesource.glu.util import Url
 
 def getComponentClass(uri):
     """
@@ -111,6 +112,7 @@ class CodeBrowser(BaseBrowser):
                 # No sub-detail specified: We want meta info about a code segment (component)
                 #
                 data = component.getMetaData()
+                data = languageStructToPython(component, data)
             else:
                 #
                 # Some sub-detail of the requested component was requested

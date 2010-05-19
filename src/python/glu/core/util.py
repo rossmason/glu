@@ -3,6 +3,7 @@ Utility definitions, methods and classes.
 
 """
 
+'''
 class Url(object):
     """
     Can be used like a string, but by having a dedicated
@@ -66,6 +67,7 @@ class Url(object):
         
         """
         return '<a href="%s">%s</a>' % (self.urlstr, self.display_str)
+'''
 
 def bool_view(flag):
     """
@@ -84,4 +86,5 @@ def bool_view(flag):
     
     """
     return "yes" if flag else "no"
+
 

@@ -11,6 +11,9 @@ from glu.exceptions import *
 from glu.resources  import paramSanityCheck, fillDefaults, convertTypes, \
                            retrieveResourceFromStorage, getResourceUri
 
+from glu.languages import *
+
+
 def _accessComponentService(component, services, complete_resource_def, resource_name, service_name,
                             positional_params, runtime_param_dict, input, request="GET", method=None, direct_call=False):
     """
@@ -147,10 +150,7 @@ def _accessComponentService(component, services, complete_resource_def, resource
                 # from the resource definition.
                 params.update(runtime_param_dict)
             
-            code, data = service_method(request = request,
-                                        input   = input,
-                                        params  = params,
-                                        method  = method)
+            code, data = serviceMethodProxy(component, service_method, request, input, params, method)
         else:
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:
@@ -158,9 +158,7 @@ def _accessComponentService(component, services, complete_resource_def, resource
             raise Exception(e.msg)
         else:
             raise e
-    
     return code, data
-
 
 
 def _getResourceDetails(resource_name):
@@ -186,7 +184,8 @@ def _getResourceDetails(resource_name):
     # is added to the public information about the resource.
     code_uri  = complete_resource_def['private']['code_uri']
     component = glu.core.codebrowser.getComponentInstance(code_uri, resource_name)
-    services  = component._getServices(resource_base_uri = resource_home_uri)
+    services  = component._getServices(resource_home_uri)
+    services  = languageStructToPython(component, services)
     public_resource_def['services'] = services
     
     return dict(complete_resource_def = complete_resource_def,

@@ -12,7 +12,6 @@ import glu.settings as settings
 from glu.exceptions                import *
 from glu.logger                    import *
 from glu.core.basebrowser          import BaseBrowser
-from glu.core.util                 import Url
 from glu.core.codebrowser          import getComponentInstance
 from glu.resources                 import paramSanityCheck, fillDefaults, makeResource, listResources, \
                                           retrieveResourceFromStorage, getResourceUri, deleteResourceFromStorage

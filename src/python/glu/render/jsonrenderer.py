@@ -10,7 +10,8 @@ import glujson as json
 from glu.render.baserenderer import BaseRenderer
 
 from glu.platform_specifics  import *
-from glu.core.util           import Url
+
+from org.mulesource.glu.util import Url
 
 
 def _default(obj):

@@ -5,6 +5,8 @@ The parameter class.
 from datetime import date
 from datetime import time as time_class
 
+from glu.platform_specifics import PLATFORM, PLATFORM_JYTHON
+
 #
 # Types for resource parameters
 #
@@ -64,14 +66,39 @@ def __bool_convert(x):
         else:
             return False
 
+#
+# Type conversion turns out to be quite odd. The more languages
+# we enable, the more 'similar' types we have to recognize and
+# deal with. For example, a component may expect a number as
+# attribute. For a Java component that might be a BigDecimal,
+# for a Python component, it might just be int or float.
+# So, considering Python as the base, we start by defining all
+# the python types for a particular Glu type. Then we add the
+# types of the other languages if and when appropriate.
+TYPES_DICT = {
+    "STRING_TYPES"   : [ unicode, str ],
+    "PASSWORD_TYPES" : [ unicode, str ],
+    "BOOL_TYPES"     : [ bool ],
+    "DATE_TYPES"     : [ unicode, str ],
+    "TIME_TYPES"     : [ unicode, str ],
+    "NUMBER_TYPES"   : [ int, float ],
+    "URI_TYPES"      : [ unicode, str ],
+}
+
+if PLATFORM == PLATFORM_JYTHON:
+    # Now selectively add some of the Java types
+    from java.math import BigDecimal
+    TYPES_DICT["NUMBER_TYPES"].append(BigDecimal)
+
+
 TYPE_COMPATIBILITY = {
-    PARAM_STRING   : ([ unicode, str ], [ str ], None),
-    PARAM_PASSWORD : ([ unicode, str ], [ str ], None),
-    PARAM_BOOL     : ([ bool ], [ bool ], __bool_convert),
-    PARAM_DATE     : ([ unicode, str ], [ date ], lambda x : date(*[ int(elem) for elem in x.split("-")])),
-    PARAM_TIME     : ([ unicode, str ], [ time_class ], lambda x : time_class(*[ int(elem) for elem in x.split(":")])),
-    PARAM_NUMBER   : ([ int, float ], [ int, float ], __numstr_to_num),
-    PARAM_URI      : ([ unicode, str ], [ str ], None)
+    PARAM_STRING   : (TYPES_DICT["STRING_TYPES"], [ str ], None),
+    PARAM_PASSWORD : (TYPES_DICT["PASSWORD_TYPES"], [ str ], None),
+    PARAM_BOOL     : (TYPES_DICT["BOOL_TYPES"], [ bool ], __bool_convert),
+    PARAM_DATE     : (TYPES_DICT["DATE_TYPES"], [ date ], lambda x : date(*[ int(elem) for elem in x.split("-")])),
+    PARAM_TIME     : (TYPES_DICT["TIME_TYPES"], [ time_class ], lambda x : time_class(*[ int(elem) for elem in x.split(":")])),
+    PARAM_NUMBER   : (TYPES_DICT["NUMBER_TYPES"], [ int, float ], __numstr_to_num),
+    PARAM_URI      : (TYPES_DICT["URI_TYPES"], [ str ], None)
 }
 
 class ParameterDef(object):
@@ -86,7 +113,7 @@ class ParameterDef(object):
     By default, a parameter is 'required'. Note that
     this parameter definition does not contain the
     name of the parameter, since the name is merely
-    the key in the paramater definition dictionary,
+    the key in the parameter definition dictionary,
     which is maintained by each component.
     
     """

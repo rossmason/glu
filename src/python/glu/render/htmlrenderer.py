@@ -10,7 +10,9 @@ import string
 import glu.settings as settings
 
 from glu.render.baserenderer import BaseRenderer
-from glu.core.util           import Url, bool_view
+from glu.core.util           import bool_view
+
+from org.mulesource.glu.util import Url
 
 class HtmlRenderer(BaseRenderer):
     """

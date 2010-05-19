@@ -19,10 +19,13 @@ from glu.components.storage_component      import StorageComponent
 #from glu.components.salesforce_component   import SalesforceComponent
 #from glu.components.marakana_component     import MarakanaComponent
 
+from org.mulesource.glu.component import TestComponent
+
 #
 # The known components
 #
-_KNOWN_COMPONENTS = [ TwitterComponent, GsearchComponent, CombinerComponent, GpsWalkerComponent, StorageComponent ]
+_KNOWN_COMPONENTS = [ TwitterComponent, GsearchComponent, CombinerComponent, GpsWalkerComponent, StorageComponent,
+                      TestComponent ]
 # SalesforceComponent, MarakanaComponent ]
 
 # -------------------------------------------------------------------------------------

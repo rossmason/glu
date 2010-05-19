@@ -5,7 +5,8 @@ Allows users and clients to browse the server's meta information.
 import glu.settings as settings
 
 from glu.core.basebrowser import BaseBrowser
-from glu.core.util        import Url
+
+from org.mulesource.glu.util import Url
 
         
 class MetaBrowser(BaseBrowser):
