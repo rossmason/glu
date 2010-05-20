@@ -25,7 +25,7 @@ class MetaBrowser(BaseBrowser):
         Create the new meta browser for a request.
         
         @param request:  The client's HTTP request.
-        @type request:   BaseHttpRequest
+        @type request:   GluHttpRequest
         
         """
         # Initialize the browser with the render-args we need for meta data browsing

@@ -41,7 +41,7 @@ class GsearchComponent(BaseComponent):
         Perform a Google search.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
@@ -60,6 +60,9 @@ class GsearchComponent(BaseComponent):
         query      = params['query']
         num        = params['num']
         key        = params['api_key']
+        
+        print request.getRequestHeaders()
+        print type(request.getRequestHeaders())
         # This is the official API, which seems to require the API key
         #code, data = self.httpGet("http://base.google.com/base/feeds/snippets?q=%s&key=%s" % (query, key))
         #

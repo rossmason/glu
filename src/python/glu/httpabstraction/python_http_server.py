@@ -18,13 +18,13 @@ import glu.settings as settings
 
 from glu.logger import *
 
-from glu.httpabstraction.base_server import BaseHttpServer, BaseHttpRequest
+from glu.httpabstraction.base_server import BaseHttpServer, GluHttpRequest
 
 from glu.platform_specifics import *
 if PLATFORM == PLATFORM_PYTHON:
     from paste import httpserver
 
-class PythonHttpRequest(BaseHttpRequest):
+class PythonHttpRequest(GluHttpRequest):
     """
     Wrapper class around a concrete HTTP request representation.
     
@@ -308,7 +308,7 @@ class PythonHttpServer(BaseHttpServer):
         
         @param request_handler: The request handler class from our generic code.
         @type request_handler:  Any class with a 'handle()' method that can take a
-                                BaseHttpRequest. In our case, this is normally the
+                                GluHttpRequest. In our case, this is normally the
                                 RequestDispatcher class.
         
         """

@@ -31,7 +31,7 @@ class CombinerComponent(BaseComponent):
         Calls another component.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string

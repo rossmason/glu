@@ -95,7 +95,7 @@ class GaeHttpServer(BaseHttpServer):
         
         @param request_handler: The request handler class from our generic code.
         @type request_handler:  Any class with a 'handle()' method that can take a
-                                BaseHttpRequest. In our case, this is normally the
+                                GluHttpRequest. In our case, this is normally the
                                 RequestDispatcher class.
         
         """

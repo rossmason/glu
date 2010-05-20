@@ -48,7 +48,7 @@ class GpsWalkerComponent(BaseComponent):
         Performs a random modification of passed in GPS coordinates.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string

@@ -65,7 +65,7 @@ class CodeBrowser(BaseBrowser):
         Initialize the browser with the render-args we need for meta data browsing.
         
         @param request: Handle to the HTTP request that needs to be processed.
-        @type request:  BaseHttpRequest
+        @type request:  GluHttpRequest
         
         """
         super(CodeBrowser, self).__init__(request,

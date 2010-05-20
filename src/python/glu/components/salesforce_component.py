@@ -426,7 +426,7 @@ class SalesforceComponent(BaseComponent):
         Handle information about our contacts.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
@@ -450,7 +450,7 @@ class SalesforceComponent(BaseComponent):
         Handle information about our leads.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
@@ -474,7 +474,7 @@ class SalesforceComponent(BaseComponent):
         Handle information about our opportunities.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string

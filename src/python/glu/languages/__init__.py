@@ -21,6 +21,7 @@ from glu.exceptions import *
 
 if PLATFORM == PLATFORM_JYTHON:
     import java.lang.Exception
+    from java.lang import String
     from java.util import HashMap, Vector
 
 
@@ -94,8 +95,17 @@ def __javaServiceMethodProxy(method, request, input, params, http_method):
     Prepares parameters, converts exceptions and results.
     
     """
+    print "---- 1"
+    request.setNativeMode()
+    print "---- 2"
     try:
-        res = method(request, input, params, http_method)
+        # The parameter dictionary needs to be transcribed into a HashMap
+        hm = HashMap()
+        for key, val in params.items():
+            hm[key] = val        
+        print "---- 3"
+        res = method(request, String(input), hm, String(http_method))
+        print "---- 4"
     except java.lang.Exception, e:
         raise GluException(str(e))
     code = res.getCode()

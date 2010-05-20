@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import org.mulesource.glu.parameter.*;
 import org.mulesource.glu.component.api.*;
+import org.mulesource.glu.GluHttpRequest;
 
 public class TestComponent extends BaseComponent
 {
@@ -43,13 +44,26 @@ public class TestComponent extends BaseComponent
         paramDef.put("num", new ParameterDefNumber("Number of results", false, 10));
     }
     
-    public Result foobar(Object request, Object input, Object params, Object method)
+    public Result foobar(GluHttpRequest request, String input, HashMap<String, Object> params, String method)
     {
         System.out.println("### request: " + request.getClass());
-        System.out.println("### input:   " + input.getClass());
+        System.out.println("### input:   " + input.getClass() + " === " + input);
         System.out.println("### params:  " + params.getClass());
-        System.out.println("### method:  " + method.getClass());
+        System.out.println("### method:  " + method.getClass() + " === " + method);
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Protocol:   " + request.getRequestProtocol());
+        System.out.println("Method:     " + request.getRequestMethod());
+        System.out.println("URI:        " + request.getRequestURI());
+        System.out.println("Headers:    " + request.getRequestHeaders());
+        System.out.println("Query:      " + request.getRequestQuery());
+        System.out.println("Body:       " + request.getRequestBody());
+        request.setResponseHeader("Location", "http://www.brendel.com");
+        
+        System.out.println("----------------------------------------------------------");
      
+        for (Object i: params.keySet()) {
+            System.out.println("Key: " + i + "  Value: " + params.get(i) + "   type of value: " + params.get(i).getClass());
+        }
         System.out.println("@ 1");
         HashMap res = new HashMap();
         System.out.println("@ 2");

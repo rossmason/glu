@@ -78,7 +78,7 @@ class TwitterComponent(BaseComponent):
         Gets or updates the twitter status for the specified account.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
@@ -107,7 +107,7 @@ class TwitterComponent(BaseComponent):
         Get the user's timeline.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string

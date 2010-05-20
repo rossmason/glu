@@ -42,7 +42,7 @@ class StorageComponent(BaseComponent):
         Stored or retrieves data from the storage bucket.
         
         @param request:    Information about the HTTP request.
-        @type request:     BaseHttpRequest
+        @type request:     GluHttpRequest
         
         @param input:      Any data that came in the body of the request.
         @type input:       string

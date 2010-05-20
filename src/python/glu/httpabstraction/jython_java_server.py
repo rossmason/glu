@@ -24,9 +24,9 @@ import glu.settings as settings
 
 from glu.logger import *
 
-from glu.httpabstraction.base_server import BaseHttpServer, BaseHttpRequest
+from glu.httpabstraction.base_server import BaseHttpServer, GluHttpRequest
 
-class JythonJavaHttpRequest(BaseHttpRequest):
+class JythonJavaHttpRequest(GluHttpRequest):
     """
     Wrapper class around a concrete HTTP request representation.
     
@@ -45,12 +45,18 @@ class JythonJavaHttpRequest(BaseHttpRequest):
     __request_uri_str  = None
     __request_headers  = None
     __response_headers = dict()
+
+    _native_mode = False
     
-    def __init__(self, native_request):
+    def setNativeMode(self):
+        print "@#@#@#@#@#@  Setting native mode"
+        self._native_mode = True
+
+    def setNativeRequest(self, native_req):
         """
         Initialize request wrapper with the native request class.
         
-        The BaseHttpRequest may be used anywhere, but is only created within
+        The GluHttpRequest may be used anywhere, but is only created within
         the http-abstraction-API. Therefore, it is ok for it to get the
         native-request object passed into it here.
         
@@ -58,7 +64,7 @@ class JythonJavaHttpRequest(BaseHttpRequest):
         @type native_request:   com.sun.net.httpserver.HttpExchange
         
         """
-        self.__native_req      = native_request
+        self.__native_req = native_req
     
     def setResponseCode(self, code):
         """
@@ -173,8 +179,11 @@ class JythonJavaHttpRequest(BaseHttpRequest):
         
         """
         if not self.__request_headers:
-            self.__request_headers = dict(self.__native_req.getRequestHeaders())
-        return self.__request_headers
+            self.__request_headers = self.__native_req.getRequestHeaders()
+        if self._native_mode:
+            return self.__request_headers
+        else:
+            return dict(self.__request_headers)
     
     def getRequestQuery(self):
         """
@@ -259,17 +268,17 @@ class __HttpHandler(HttpHandler):
         """
         Initialize the handler class for the native request.
         
-        After converting the native request to a BaseHttpRequest,
+        After converting the native request to a GluHttpRequest,
         this is then passed on to a generic request handler.
         
         @param request_handler: Any class that provides a 'handle()'
-                                method that can take a BaseHttpRequest.
+                                method that can take a GluHttpRequest.
                                 Those handler classes are provided by
                                 or generic code and are passed through
                                 to this native handler here during server
                                 creation.
         @type request_handler:  Any class that provides a 'handle()' method
-                                that can take a BaseHttpRequest. Normally,
+                                that can take a GluHttpRequest. Normally,
                                 this is our RequestDispatcher class.
                                 
         """
@@ -279,7 +288,7 @@ class __HttpHandler(HttpHandler):
         """
         Handle a native request.
         
-        Converts the native request to a BaseHttpRequest, prepares
+        Converts the native request to a GluHttpRequest, prepares
         logging and exception handling and creates the specific
         handler class.
         
@@ -292,7 +301,8 @@ class __HttpHandler(HttpHandler):
         """
         try:
             start_time = datetime.datetime.now()
-            req = JythonJavaHttpRequest(native_request)            
+            req = JythonJavaHttpRequest()
+            req.setNativeRequest(native_request)            
             msg = "%s : %s : %s" % (req.getRequestProtocol(),
                                     req.getRequestMethod(),
                                     req.getRequestURI())
@@ -333,7 +343,7 @@ class JythonJavaHttpServer(BaseHttpServer):
         
         @param request_handler: The request handler class from our generic code.
         @type request_handler:  Any class with a 'handle()' method that can take a
-                                BaseHttpRequest. In our case, this is normally the
+                                GluHttpRequest. In our case, this is normally the
                                 RequestDispatcher class.
         
         """

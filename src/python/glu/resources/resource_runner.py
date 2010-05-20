@@ -50,7 +50,7 @@ def _accessComponentService(component, services, complete_resource_def, resource
     @type input:                  string
 
     @param request:               HTTP request structure.
-    @type request:                BaseHttpRequest
+    @type request:                GluHttpRequest
     
     @param direct_call:           Set this if the function is called directly from another component
                                   or piece of code that's not part of Glu. In that case, it wraps

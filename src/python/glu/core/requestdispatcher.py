@@ -37,7 +37,7 @@ class RequestDispatcher(object):
         translates them into log messages.
         
         @param request:   A properly wrapped request.
-        @type request:    BaseHttpRequest
+        @type request:    GluHttpRequest
         
         @return:          Response code, body and headers
         @rtype:           Tuple of (int, string, dict)

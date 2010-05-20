@@ -12,7 +12,6 @@ from glu.platform_specifics import *
 from org.mulesource.glu import Settings
 from org.mulesource.glu.util import Url
 
-
 if __name__ == '__main__':
     f = Settings();
 

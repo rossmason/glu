@@ -17,6 +17,27 @@ from glu.resources                 import paramSanityCheck, fillDefaults, makeRe
                                           retrieveResourceFromStorage, getResourceUri, deleteResourceFromStorage
 from glu.resources.resource_runner import _accessComponentService, _getResourceDetails
 
+
+def get_request_query_dict(request):
+        """
+        Return a dictionary of the parsed query arguments.
+        
+        @param request:    The request object.
+        @type request:     GluHttpRequest
+        
+        @return:  Dictionary with query arguments.
+        @rtype:   dict
+        
+        """
+        query_string = request.getRequestQuery()
+        if query_string:
+            # Parse the query string apart and put values into a dictionary
+            runtime_param_dict = dict([elem.split("=") if "=" in elem else (elem, None) \
+                                                       for elem in query_string.split("&")])
+        else:
+            runtime_param_dict = dict()
+        return runtime_param_dict
+ 
 class ResourceBrowser(BaseBrowser):
     """
     Handles requests for resource info.
@@ -27,7 +48,7 @@ class ResourceBrowser(BaseBrowser):
         Initialize the browser with the render-args we need for meta data browsing.
         
         @param request: Handle to the HTTP request that needs to be processed.
-        @type request:  BaseHttpRequest
+        @type request:  GluHttpRequest
         
         """
         super(ResourceBrowser, self).__init__(request,
@@ -107,7 +128,7 @@ class ResourceBrowser(BaseBrowser):
                 #
                 
                 # This service has some possible runtime parameters defined.
-                runtime_param_dict = self.request.getRequestQueryDict()
+                runtime_param_dict = get_request_query_dict(self.request)
 
                 service_name      = path_elems[1]
                 positional_params = path_elems[2:]
