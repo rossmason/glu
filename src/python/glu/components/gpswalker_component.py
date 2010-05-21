@@ -43,30 +43,20 @@ class GpsWalkerComponent(BaseComponent):
                        }
     
             
-    def walk(self, request, input, params, method):
+    def walk(self, method, input, lat, long):
         """
         Performs a random modification of passed in GPS coordinates.
         
-        @param request:    Information about the HTTP request.
-        @type request:     GluHttpRequest
-        
-        @param input:      Any data that came in the body of the request.
-        @type input:       string
-        
-        @param params:     Dictionary of parameter values.
-        @type params:      dict
-        
         @param method:     The HTTP request method.
         @type method:      string
-        
+
+        @param input:      Any data that came in the body of the request.
+        @type input:       string
+                
         @return:           Return dictionary with 'lat' and 'long' keys.
         @rtype:            dict
         
         """
-        # Get my parameters
-        lat   = params['lat']
-        long  = params['long']
-
         dist  = random.random() * 0.002
         angle = random.random() * math.pi * 2
 
@@ -87,12 +77,11 @@ class GpsWalkerComponent(BaseComponent):
         "Auckland"     : { "lat" : -36.848461, "long" : 174.762183 },
     }
 
-    def city(self, request, input, params, method):
+    def city(self, method, input, city_name):
         """
         Return the coordinates of a specified city.
 
         """
-        city_name  = params['name']
         # Getting the coordinates of that city. If the city is unknown
         # then we just return the coordinates for Auckland.
         new_coords = self.CITY_COORDS.get(city_name, self.CITY_COORDS['Auckland'])

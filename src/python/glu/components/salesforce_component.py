@@ -9,7 +9,6 @@ import beatbox
 
 # Glu imports
 from glu.components.api import *
-from org.mulesource.glu.exception import *
 
 #
 # All the services have the same parameters. We only need to define them once.
@@ -31,13 +30,13 @@ _all_tables_params =  {
                                                                  required=False, default=""),
                             "filter_value_2"      : ParameterDef(PARAM_STRING, "Field value for filtering", required=False, default=""),
 
-                             "filter_fieldname_3" : ParameterDef(PARAM_STRING,
+                            "filter_fieldname_3"  : ParameterDef(PARAM_STRING,
                                                                  "Field name for filtering. Append __lt, __lte, __gt, __gte, __ne or __like to further " \
                                                                  "specify the filtering in an SQL like manner.",
                                                                  required=False, default=""),
                             "filter_value_3"      : ParameterDef(PARAM_STRING, "Field value for filtering", required=False, default=""),
 
-                             "view"               : ParameterDef(PARAM_STRING,
+                            "view"                : ParameterDef(PARAM_STRING,
                                                                  "If 'data' was requested, this determines how much data is returned: 'compact' for only " \
                                                                  "the most essential fields, 'normal' for the default contact fields, 'all' for all fields, " \
                                                                  "including custom fields.",

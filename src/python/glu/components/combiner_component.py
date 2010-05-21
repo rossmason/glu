@@ -26,21 +26,15 @@ class CombinerComponent(BaseComponent):
                        }
     
             
-    def combine(self, request, input, params, method):
+    def combine(self, method, input):
         """
         Calls another component.
         
-        @param request:    Information about the HTTP request.
-        @type request:     GluHttpRequest
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
-        
-        @param params:     Dictionary of parameter values.
-        @type params:      dict
-
-        @param method:     The HTTP request method.
-        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string

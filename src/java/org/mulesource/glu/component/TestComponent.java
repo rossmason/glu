@@ -10,6 +10,7 @@
 
 package org.mulesource.glu.component;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -18,62 +19,39 @@ import org.mulesource.glu.component.api.*;
 import org.mulesource.glu.exception.GluException;
 import org.mulesource.glu.GluHttpRequest;
 
+
+@ComponentInfo(name        = "TestComponent",
+               description = "This is a Java test component",
+               doc         = "Here is a doc string")
 public class TestComponent extends BaseComponent
-{
-    public TestComponent() throws GluException
-    {
-        this(null);
-    }
+{    
+    @ResourceParameter(name="api_key", desc="This is the API key")
+    @ResourceParameterDefault("foo foo foo")
+    public String api_key;
     
-    public TestComponent(String resourceName) throws GluException
+    @Service(description = "This is the foobar service",
+             doc         = "Here is the docstring for this service method.")
+    public Result foobar(String method, String input,
+                         @Parameter(name="query",
+                                    desc="This is the query string",
+                                    positional=true)                    String     query,
+                         @Parameter(name="num",
+                                    desc="The number of results")
+                                    @Default("10")                      BigDecimal num)
     {
-        super(resourceName);
-        
-        componentDescriptor = new ComponentDescriptor("TestComponent",
-                                                      "This is a Java test component",
-                                                      "Here is a doc string");
-        componentDescriptor.addParameter("api_key", new ParameterDefString("This is a the API key", true, ""));
-        
-        ServiceDescriptor sd = new ServiceDescriptor("This is the foobar service");
-        sd.addParameter("query", new ParameterDefString("The search query"));
-        sd.addParameter("num",   new ParameterDefNumber("Number of results", 10));
-        sd.setPositionalParameters("num");
-        
-        componentDescriptor.addService("foobar", sd);
-    }
-    
-    public Result foobar(GluHttpRequest request, String input, HashMap<String, Object> params, String method)
-    {
-        System.out.println("### request: " + request.getClass());
+        System.out.println("----------------------------------------------------------");
         System.out.println("### input:   " + input.getClass() + " === " + input);
-        System.out.println("### params:  " + params.getClass());
         System.out.println("### method:  " + method.getClass() + " === " + method);
-        System.out.println("----------------------------------------------------------");
-        System.out.println("Protocol:   " + request.getRequestProtocol());
-        System.out.println("Method:     " + request.getRequestMethod());
-        System.out.println("URI:        " + request.getRequestURI());
-        System.out.println("Headers:    " + request.getRequestHeaders());
-        System.out.println("Query:      " + request.getRequestQuery());
-        System.out.println("Body:       " + request.getRequestBody());
-        request.setResponseHeader("Location", "http://www.brendel.com");
+             
+        System.out.println("Query parameter: " + query);
+        System.out.println("Num parameter:   " + num);
         
-        System.out.println("----------------------------------------------------------");
-     
-        for (Object i: params.keySet()) {
-            System.out.println("Key: " + i + "  Value: " + params.get(i) + "   type of value: " + params.get(i).getClass());
-        }
-        System.out.println("@ 1");
         HashMap res = new HashMap();
-        System.out.println("@ 2");
         res.put("foo", "This is a test");
-        System.out.println("@ 3");
         HashMap sub = new HashMap();
         res.put("bar", sub);
-        System.out.println("@ 4");
         sub.put("some value", 1);
-        System.out.println("@ 5");
         sub.put("another value", "Some text");
-        System.out.println("@ 6");
         Vector v = new Vector();
         v.add("Blah");
         v.add(12345);
@@ -86,7 +64,13 @@ public class TestComponent extends BaseComponent
         
         return new Result(200, v);
     }
-
+ 
+    @Service(description = "This is the blahblah service",
+             doc         = "Here is the docstring for this service method.")
+    public Result blahblah(String method, String input)
+    {
+        return new Result(200, "This is a test");
+    }
 }
 
 

@@ -36,31 +36,27 @@ class GsearchComponent(BaseComponent):
                        }
     
             
-    def search(self, request, input, params, method):
+    def search(self, input, method, query, num):
         """
         Perform a Google search.
         
-        @param request:    Information about the HTTP request.
-        @type request:     GluHttpRequest
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
-        
-        @param params:     Dictionary of parameter values.
-        @type params:      dict
-        
-        @param method:     The HTTP request method.
-        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string
         
         """
         # Get my parameters
-        query      = params['query']
-        num        = params['num']
-        key        = params['api_key']
-        
+        print "@@@@ in component: ", self
+        print "@@@@@@@@ Parameter query: ", query, type(query)
+        print "@@@@@@@@ Parameter num:   ", num, type(num)
+        print "@@@@@@@@ RCP api_key:     ", self.api_key, type(self.api_key)
+
+        request = self.getRequest()
         print request.getRequestHeaders()
         print type(request.getRequestHeaders())
         # This is the official API, which seems to require the API key

@@ -51,7 +51,9 @@ def getComponentInstance(uri, resource_name = None):
     """
     component_class = getComponentClass(uri)
     if component_class:
-        return component_class(resource_name)
+        component = component_class()
+        component.setResourceName(resource_name)
+        return component
     else:
         return None
         

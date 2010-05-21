@@ -37,21 +37,15 @@ class StorageComponent(BaseComponent):
                        }
     
             
-    def files(self, request, input, params, method):
+    def files(self, method, input, name):
         """
         Stored or retrieves data from the storage bucket.
         
-        @param request:    Information about the HTTP request.
-        @type request:     GluHttpRequest
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
-        
-        @param params:     Dictionary of parameter values.
-        @type params:      dict
-        
-        @param method:     The HTTP request method.
-        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string
@@ -60,9 +54,7 @@ class StorageComponent(BaseComponent):
         # Access to our storage bucket
         storage   = self.getFileStorage()
 
-        # Get my parameters
-        data_name = params.get('name')
-        if not data_name:
+        if not name:
             # User didn't specify a specific file, which means we should generate
             # a list of all the files in that namespace.
             data = storage.listFiles()
@@ -70,18 +62,18 @@ class StorageComponent(BaseComponent):
             # We want to prepend the resource name and service name, so that the user
             # gets complete URIs for each file
             my_resource_uri = self.getMyResourceUri()
-            new_data = [ "%s/%s/%s" % (my_resource_uri, "files", name) for name in data ]
+            new_data = [ "%s/%s/%s" % (my_resource_uri, "files", dname) for dname in data ]
             data = new_data
         else:
             if method == "DELETE":
-                storage.deleteFile(data_name)
+                storage.deleteFile(name)
                 data = "File deleted"
             else:
                 if input:
-                    storage.storeFile(data_name, input)
+                    storage.storeFile(name, input)
                     data = "Successfully stored"
                 else:
-                    data = storage.loadFile(data_name)
+                    data = storage.loadFile(name)
 
         return 200, data
 

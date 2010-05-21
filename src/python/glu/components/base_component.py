@@ -74,11 +74,21 @@ class BaseComponent(object):
     SERVICES         = None
     """A dictionary keying method name to docstring for exposed sub-service methods. May be left empty."""
     
-    def __init__(self, resource_name=None):
+    def __init__(self):
         self.__accountname   = None
         self.__password      = None
-        self.__resource_name = resource_name
+        self.__resource_name = None
+        self.__http_request  = None
 
+    def setResourceName(self, resource_name):
+        self.__resource_name = resource_name
+        
+    def setRequest(self, request):
+        self.__http_request = request
+        
+    def getRequest(self):
+        return self.__http_request
+    
     def getMyResourceName(self):
         return self.__resource_name
 

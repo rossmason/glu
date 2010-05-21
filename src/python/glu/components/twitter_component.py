@@ -12,7 +12,7 @@ from glu.components.api import *
 class TwitterComponent(BaseComponent):
     NAME             = "TwitterComponent"
     PARAM_DEFINITION = {
-                         "account_name" :     ParameterDef(PARAM_STRING, "Twitter account name"),
+                         "account_name" :     ParameterDef(PARAM_STRING,   "Twitter account name"),
                          "account_password" : ParameterDef(PARAM_PASSWORD, "Password")
                        }
     
@@ -73,36 +73,27 @@ class TwitterComponent(BaseComponent):
         # Return the requested information, in this case the latest status
         return data
             
-    def status(self, request, input, params, method):
+    def status(self, method, input):
         """
         Gets or updates the twitter status for the specified account.
         
-        @param request:    Information about the HTTP request.
-        @type request:     GluHttpRequest
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
-        
-        @param params:     Dictionary of parameter values.
-        @type params:      dict
-        
-        @param method:     The HTTP request method.
-        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string
         
         """
         # Get my parameters
-        account  = params['account_name']
-        password = params['account_password']
-        
         if not input:
-            return 200, self.__get_status(account)
+            return 200, self.__get_status(self.account_name)
         else:
-            return 200, self.__post_status(account, password, input)
+            return 200, self.__post_status(self.account_name, self.account_password, input)
 
-    def timeline(self, request, input, params, method):
+    def timeline(self, method, input):
         """
         Get the user's timeline.
         
@@ -123,7 +114,7 @@ class TwitterComponent(BaseComponent):
 
         """
         # Get my parameters
-        self.httpSetCredentials(params['account_name'], params['account_password'])
+        self.httpSetCredentials(self.account_name, self.account_password)
         code, obj_str = self.httpGet("http://api.twitter.com/1/statuses/user_timeline.json")
         if code == 200:
             obj = json.loads(obj_str)

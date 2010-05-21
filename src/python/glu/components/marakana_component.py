@@ -201,21 +201,15 @@ class MarakanaComponent(BaseComponent):
             if type(item) is dict:
                 self.__dict_struct_compare(is_dict[key], item)
 
-    def orders(self, request, input, params, method):
+    def orders(self, method, input, id):
         """
         Stored or retrieves data from the storage bucket for Marakana orders.
         
-        @param request:    Information about the HTTP request.
-        @type request:     GluHttpRequest
+        @param method:     The HTTP request method.
+        @type method:      string
         
         @param input:      Any data that came in the body of the request.
         @type input:       string
-        
-        @param params:     Dictionary of parameter values.
-        @type params:      dict
-        
-        @param method:     The HTTP request method.
-        @type method:      string
         
         @return:           The output data of this service.
         @rtype:            string
@@ -225,7 +219,7 @@ class MarakanaComponent(BaseComponent):
         storage   = self.getFileStorage()
 
         # Get my parameters
-        param_order_id = params.get('id')
+        param_order_id = id
         code = 200
         if not param_order_id  and  not input:
             # User didn't specify a specific order (and also doesn't POST a new order object),
@@ -270,8 +264,8 @@ class MarakanaComponent(BaseComponent):
                         data       = "Successfully updated: %s" % location_str
                     else:
                         # Creating a new order? We need to extract the order id.
-                        if request:
-                            request.setResponseHeader("Location", location_str)
+                        if self.getRequest():
+                            self.getRequest().setResponseHeader("Location", location_str)
                         code = 201
                         data = "Successfully stored: %s" % location_str
 
@@ -286,11 +280,11 @@ class MarakanaComponent(BaseComponent):
         return code, data
 
 
-    def matches(self, request, input, params, method):
+    def matches(self, method, input):
         storage    = self.getFileStorage()
         order_list = storage.listFiles()
 
-        salesforce_resource_uri = params['salesforce_resource']
+        salesforce_resource_uri = self.salesforce_resource
 
         match_count = 0
         out         = dict()

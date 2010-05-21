@@ -100,7 +100,7 @@ public class ComponentDescriptor
             servicesDict.put(name, serviceDef);
             serviceDef.put("desc", service.getDesc());
             serviceDef.put("params", service.getParamMap());
-            if (service.getPositionalParams().length > 0) {
+            if (!service.getPositionalParams().isEmpty()) {
                 serviceDef.put("positional_params", service.getPositionalParams());
             }
         }

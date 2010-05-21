@@ -150,7 +150,7 @@ def _accessComponentService(component, services, complete_resource_def, resource
                 # from the resource definition.
                 params.update(runtime_param_dict)
             
-            code, data = serviceMethodProxy(component, service_method, request, input, params, method)
+            code, data = serviceMethodProxy(component, service_method, service_name, request, input, params, method)
         else:
             raise GluException("Service '%s' is not exposed by this resource." % service_name)
     except GluException, e:

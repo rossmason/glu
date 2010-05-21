@@ -12,7 +12,7 @@ package org.mulesource.glu.component.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Vector;
 
 import org.mulesource.glu.exception.GluException;
 import org.mulesource.glu.exception.GluDuplicateKeyException;
@@ -27,13 +27,13 @@ public class ServiceDescriptor
     private String desc;
     
     private HashMap<String, ParameterDef> params;
-    private String[]                      positionalParams;
+    private Vector<String>                positionalParams;
 
     public ServiceDescriptor(String desc)
     {
         this.desc             = desc;
         this.params           = new HashMap<String, ParameterDef>();
-        this.positionalParams = null;
+        this.positionalParams = new Vector<String>();
     }
     
     public String getDesc()
@@ -55,17 +55,20 @@ public class ServiceDescriptor
         return params;
     }
     
-    public void setPositionalParameters(String... positionals) throws GluMalformedServiceDescriptorException
+    public void setPositionalParameters(ArrayList<String> positionals) throws GluMalformedServiceDescriptorException
     {
         for (String name : positionals) {
             if (!params.containsKey(name)) {
                 throw new GluMalformedServiceDescriptorException("Parameter '" + name + "' from positionals does not exist");
             }
         }
-        positionalParams = positionals;
+        
+        for (String elem: positionals) {
+            positionalParams.add(elem);
+        }
     }
     
-    public String[] getPositionalParams()
+    public Vector<String> getPositionalParams()
     {
         return positionalParams;
     }
