@@ -16,6 +16,26 @@ public class ParameterDefNumber extends ParameterDef
 {
     private BigDecimal defaultVal;
     
+    public ParameterDefNumber(String desc)
+    {
+        this(desc, true, null);
+    }
+    
+    public ParameterDefNumber(String desc, int defaultVal)
+    {
+        this(desc, false, defaultVal);
+    }
+        
+    public ParameterDefNumber(String desc, float defaultVal)
+    {
+        this(desc, false, defaultVal);
+    }
+        
+    public ParameterDefNumber(String desc, BigDecimal defaultVal)
+    {
+        this(desc, false, defaultVal);
+    }
+        
     public ParameterDefNumber(String desc, boolean required, int defaultVal)
     {
         this(desc, required, new BigDecimal(defaultVal));

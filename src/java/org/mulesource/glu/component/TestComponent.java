@@ -15,33 +15,31 @@ import java.util.Vector;
 
 import org.mulesource.glu.parameter.*;
 import org.mulesource.glu.component.api.*;
+import org.mulesource.glu.exception.GluException;
 import org.mulesource.glu.GluHttpRequest;
 
 public class TestComponent extends BaseComponent
 {
-    public TestComponent()
+    public TestComponent() throws GluException
     {
         this(null);
     }
     
-    public TestComponent(String resourceName)
+    public TestComponent(String resourceName) throws GluException
     {
         super(resourceName);
-        name         = "TestComponent";
-        desc         = "This is a Java test component";
-        docs         = "Here is a doc string";
         
-        params       = new HashMap<String, ParameterDef>();
-        params.put("api_key", new ParameterDefString("This is the API key", true, ""));
+        componentDescriptor = new ComponentDescriptor("TestComponent",
+                                                      "This is a Java test component",
+                                                      "Here is a doc string");
+        componentDescriptor.addParameter("api_key", new ParameterDefString("This is a the API key", true, ""));
         
-        services     = new HashMap<String, Object>();
-        HashMap<String, Object> serviceDef = new HashMap<String, Object>();
-        services.put("foobar", serviceDef);
-        serviceDef.put("desc", "This is the foobar service");
-        HashMap<String, ParameterDef> paramDef = new HashMap<String, ParameterDef>();
-        serviceDef.put("params", paramDef);
-        paramDef.put("query", new ParameterDefString("The search query", true, ""));
-        paramDef.put("num", new ParameterDefNumber("Number of results", false, 10));
+        ServiceDescriptor sd = new ServiceDescriptor("This is the foobar service");
+        sd.addParameter("query", new ParameterDefString("The search query"));
+        sd.addParameter("num",   new ParameterDefNumber("Number of results", 10));
+        sd.setPositionalParameters("num");
+        
+        componentDescriptor.addService("foobar", sd);
     }
     
     public Result foobar(GluHttpRequest request, String input, HashMap<String, Object> params, String method)

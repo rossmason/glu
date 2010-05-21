@@ -8,7 +8,7 @@ import glujson as json
 # Glu imports
 import glu.settings as settings
 
-from glu.exceptions       import GluException
+from org.mulesource.glu.exception       import GluException
 from glu.components       import _CODE_MAP
 from glu.resources        import makeResource 
 from glu.core.basebrowser import BaseBrowser

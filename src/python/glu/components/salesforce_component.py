@@ -9,7 +9,7 @@ import beatbox
 
 # Glu imports
 from glu.components.api import *
-from glu.exceptions import *
+from org.mulesource.glu.exception import *
 
 #
 # All the services have the same parameters. We only need to define them once.
@@ -300,7 +300,7 @@ class SalesforceComponent(BaseComponent):
             }
             op = op_translate.get(op_str)
             if not op:
-                raise GluBadRequest("Unknown operand '%s' for field '%s'" % (op_str, field))
+                raise GluBadRequestException("Unknown operand '%s' for field '%s'" % (op_str, field))
         return "%s %s %s" % (field, op, value)
 
 
@@ -358,7 +358,7 @@ class SalesforceComponent(BaseComponent):
             all_fields   = self.__get_all_field_names(svc, table_name)
             query_string = "select %s from %s" % (", ".join(all_fields), table_name)
         else:
-            raise GluBadRequest("Unknown view: " + view)
+            raise GluBadRequestException("Unknown view: " + view)
 
         return query_string
 
@@ -416,7 +416,7 @@ class SalesforceComponent(BaseComponent):
             data = self.__convert_salesforce_results_to_dict(svc.query(query_string))
 
         else:
-            raise GluBadRequest("Unknown query spec: " + spec)
+            raise GluBadRequestException("Unknown query spec: " + spec)
 
         return 200, data
  

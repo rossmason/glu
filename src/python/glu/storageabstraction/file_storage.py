@@ -8,7 +8,7 @@ import os
 import glujson as json
 
 # Glu imports
-from glu.exceptions import *
+from org.mulesource.glu.exception import *
 
 class FileStorage(object):
     """
@@ -52,7 +52,7 @@ class FileStorage(object):
             buf = f.read()
             f.close()
         except Exception, e:
-            raise GluFileNotFound("File '%s' could not be found'" % (file_name))
+            raise GluFileNotFoundException("File '%s' could not be found'" % (file_name))
         return buf
 
     def storeFile(self, file_name, data):
@@ -82,9 +82,9 @@ class FileStorage(object):
             os.remove(self.__make_filename(file_name))
         except OSError, e:
             if e.errno == 2:
-                raise GluFileNotFound(file_name)
+                raise GluFileNotFoundException(file_name)
             elif e.errno == 13:
-                raise GluPermissionDenied(file_name)
+                raise GluPermissionDeniedException(file_name)
             else:
                 raise GluException("Cannot delete file '%s (%s)'" % (file_name, str(e)))
         except Exception, e:
@@ -124,7 +124,7 @@ class FileStorage(object):
         """
         try:
             buf = self.loadFile(resource_name)
-        except GluFileNotFound, e:
+        except GluFileNotFoundException, e:
             return None
         obj = json.loads(buf)
         return obj

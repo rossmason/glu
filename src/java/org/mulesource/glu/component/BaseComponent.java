@@ -17,6 +17,7 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import org.mulesource.glu.Settings;
 import org.mulesource.glu.util.Url;
+import org.mulesource.glu.component.api.ComponentDescriptor;
 import org.mulesource.glu.parameter.*;
 
 public abstract class BaseComponent
@@ -25,10 +26,7 @@ public abstract class BaseComponent
     /*
      * Attributes, which need to be set by the constructor.
      */
-    protected String                        name;
-    protected String                        desc;
-    protected String                        docs;
-    protected HashMap<String, ParameterDef> params;
+    protected ComponentDescriptor           componentDescriptor = null;
     protected HashMap<String, Object>       services;
     
     private String resourceName;
@@ -81,7 +79,7 @@ public abstract class BaseComponent
         d.put("name",     getName());
         d.put("desc",     getDesc());
         d.put("doc",      getDoc());
-        d.put("params",   changeParamsToPlainDict(getParams()));
+        d.put("params",   changeParamsToPlainDict(componentDescriptor.getParamMap()));
         d.put("services", _getServices(null));
         
         HashMap<String, ParameterDef> rp = new HashMap<String, ParameterDef>();
@@ -99,27 +97,22 @@ public abstract class BaseComponent
     
     public String getName()
     {
-        return name;
+        return componentDescriptor.getName();
     }
     
     public String getDesc()
     {
-        return desc;
+        return componentDescriptor.getDesc();
     }
     
     public String getDoc()
     {
-        return docs;
+        return componentDescriptor.getDocs();
     }
     
     public String getUri()
     {
         return Settings.PREFIX_CODE + "/" + getName();
-    }
-    
-    public HashMap<String, ParameterDef> getParams()
-    {
-        return params;
     }
     
     /*
@@ -145,7 +138,8 @@ public abstract class BaseComponent
         }
         
         // Create a map of service descriptions.
-        if (services != null  &&  !services.isEmpty()) {            
+        if (componentDescriptor.getServicMap() != null  &&  !componentDescriptor.getServicMap().isEmpty()) {            
+            services = componentDescriptor.getServicesAsPlainDict();
             HashMap<String, Object> ret = new HashMap<String, Object>();
             for (String name: services.keySet()) {
                 HashMap<String, Object> thisService = (HashMap<String, Object>)services.get(name);

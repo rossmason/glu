@@ -32,7 +32,7 @@ import os
 import glu.settings as settings
 from glu.platform_specifics import STORAGE_OBJECT
 
-from glu.exceptions       import *
+from org.mulesource.glu.exception       import *
 from glu.logger           import *
 from glu.core.parameter   import TYPE_COMPATIBILITY
 
@@ -193,7 +193,7 @@ def paramSanityCheck(param_dict, param_def_dict, name_for_errors):
     #
     for pname, pdict in param_def_dict.items():
         if pdict['required']  and  (not param_dict  or  pname not in param_dict):
-            raise GluMandatoryParameterMissing("Missing mandatory parameter '%s' in section '%s'" % (pname, name_for_errors))
+            raise GluMandatoryParameterMissingException("Missing mandatory parameter '%s' in section '%s'" % (pname, name_for_errors))
 
 def fillDefaults(param_def_dict, param_dict):
     """
@@ -295,7 +295,7 @@ def makeResource(component_class, params):
     # We get the meta data (parameter definition) from the component
     component            = component_class()
     component_params_def = component.getMetaData()
-    component_params_def = laguageStructToPython(component, component_params_def)
+    component_params_def = languageStructToPython(component, component_params_def)
 
     #
     # First we check whether there are any unknown parameters specified

@@ -9,7 +9,7 @@ import glujson as json
 from google.appengine.ext import db
 
 # Glu imports
-from glu.exceptions import *
+from org.mulesource.glu.exception import *
 
 class ResourceStorage(db.Model):
     name = db.StringProperty(multiline=False)

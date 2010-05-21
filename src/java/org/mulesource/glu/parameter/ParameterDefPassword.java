@@ -13,6 +13,16 @@ package org.mulesource.glu.parameter;
 public class ParameterDefPassword extends ParameterDef
 {
     private String defaultVal;
+
+    public ParameterDefPassword(String desc)
+    {
+        this(desc, true, null);
+    }
+    
+    public ParameterDefPassword(String desc, String defaultVal)
+    {
+        this(desc, false, defaultVal);
+    }
     
     public ParameterDefPassword(String desc, boolean required, String defaultVal)
     {

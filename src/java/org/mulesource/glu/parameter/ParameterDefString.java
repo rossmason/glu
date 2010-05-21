@@ -14,6 +14,16 @@ public class ParameterDefString extends ParameterDef
 {
     private String defaultVal;
     
+    public ParameterDefString(String desc)
+    {
+        this(desc, true, null);
+    }
+    
+    public ParameterDefString(String desc, String defaultVal)
+    {
+        this(desc, false, defaultVal);
+    }
+    
     public ParameterDefString(String desc, boolean required, String defaultVal)
     {
         super("string", desc, required);

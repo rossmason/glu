@@ -6,7 +6,7 @@ to the appropriate browsers.
 # Glu imports
 import glu.settings as settings
 
-from glu.exceptions             import *
+from org.mulesource.glu.exception             import *
 from glu.core.basebrowser       import BaseBrowser
 from glu.core.staticbrowser     import StaticBrowser
 from glu.core.metabrowser       import MetaBrowser
@@ -63,11 +63,11 @@ class RequestDispatcher(object):
                     content_type, data = browser_instance.renderOutput(data)
             else:
                 (code, data) = ( 404, "404 Not found" )
-        except GluMethodNotAllowed, e:
+        except GluMethodNotAllowedException, e:
             (code, data) = e.code, e.msg
-        except GluMandatoryParameterMissing, e:
+        except GluMandatoryParameterMissingException, e:
             (code, data) = e.code, e.msg
-        except GluFileNotFound, e:
+        except GluFileNotFoundException, e:
             (code, data) = e.code, e.msg
         except GluException, e:
             (code, data) = ( 400, "Bad request: " + e.msg)

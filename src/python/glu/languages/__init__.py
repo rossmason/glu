@@ -17,7 +17,7 @@ conversion function whenever we use the components.
 
 from glu.platform_specifics import PLATFORM, PLATFORM_JYTHON
 
-from glu.exceptions import *
+from org.mulesource.glu.exception import *
 
 if PLATFORM == PLATFORM_JYTHON:
     import java.lang.Exception
@@ -95,19 +95,15 @@ def __javaServiceMethodProxy(method, request, input, params, http_method):
     Prepares parameters, converts exceptions and results.
     
     """
-    print "---- 1"
     request.setNativeMode()
-    print "---- 2"
     try:
         # The parameter dictionary needs to be transcribed into a HashMap
         hm = HashMap()
         for key, val in params.items():
             hm[key] = val        
-        print "---- 3"
         res = method(request, String(input), hm, String(http_method))
-        print "---- 4"
-    except java.lang.Exception, e:
-        raise GluException(str(e))
+    except java.lang.Exception, e:        
+        raise GluException(str(e))   # Re-raises a native exception as GluException, leading to 500 message
     code = res.getCode()
     data = res.getObject()
     if type(data) in [ HashMap, Vector ]:

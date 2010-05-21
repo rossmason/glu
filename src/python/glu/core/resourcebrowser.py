@@ -9,13 +9,15 @@ import traceback
 # Glu imports
 import glu.settings as settings
 
-from glu.exceptions                import *
+from org.mulesource.glu.exception  import *
 from glu.logger                    import *
 from glu.core.basebrowser          import BaseBrowser
 from glu.core.codebrowser          import getComponentInstance
 from glu.resources                 import paramSanityCheck, fillDefaults, makeResource, listResources, \
                                           retrieveResourceFromStorage, getResourceUri, deleteResourceFromStorage
 from glu.resources.resource_runner import _accessComponentService, _getResourceDetails
+
+import java.lang.Exception
 
 
 def get_request_query_dict(request):
@@ -83,7 +85,7 @@ class ResourceBrowser(BaseBrowser):
                 #
                 data = listResources()
             else:
-                raise GluMethodNotAllowed()
+                raise GluMethodNotAllowedException()
             
         else:
             # Path elements (the known resource prefix is stripped off)
@@ -153,7 +155,7 @@ class ResourceBrowser(BaseBrowser):
             else:
                 # No, nothing else. Someone just wanted to know more about the resource.
                 if method == "POST":
-                    raise GluMethodNotAllowed()
+                    raise GluMethodNotAllowedException()
                 data = public_resource_def
 
         return (code, data)
