@@ -5,7 +5,8 @@ The parameter class.
 from datetime import date
 from datetime import time as time_class
 
-from glu.platform_specifics import PLATFORM, PLATFORM_JYTHON
+from glu.platform_specifics       import PLATFORM, PLATFORM_JYTHON
+from org.mulesource.glu.exception import GluException
 
 #
 # Types for resource parameters
@@ -142,6 +143,8 @@ class ParameterDef(object):
         self.ptype            = ptype
         self.desc             = desc
         self.required         = required
+        if not self.required and default is None:
+            raise GluException("A default value is required for optional parameters")
         self.default          = default
         
     def as_dict(self):

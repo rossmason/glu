@@ -158,7 +158,6 @@ def __pythonServiceMethodProxy(component, method, method_name, input, params, ht
         if name in params:
             if hasattr(component, name):
                 raise GluException("Name '%s' cannot be assigned to component, because an attribute with that name exists already" % name)
-            print "@@@@@ setting new attribute in component: ", name, params[name], component
             setattr(component, name, params[name])
             del params[name]
     return method(http_method.upper(), input, **params)

@@ -30,7 +30,8 @@ class StorageComponent(BaseComponent):
                            "files" :   {
                                "desc"   : "Provide the name of the storaged item as parameter and use 'PUT' or 'GET'.",
                                "params" : {
-                                    "name" : ParameterDef(PARAM_STRING, "Name of the stored data item", required=False),
+                                    "name" : ParameterDef(PARAM_STRING, "Name of the stored data item", required=False,
+                                                          default=""),
                                },
                                "positional_params" : [ "name" ]
                            }
